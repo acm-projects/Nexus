@@ -1,5 +1,5 @@
 <p align="center">
-<img src='https://www.sbmarketingtools.com/wp-content/uploads/2020/02/How-to-Open-Restaurant.jpg' width='700'>
+<img src='https://mms.businesswire.com/media/20231024932463/en/1922758/5/wideimage.jpg' width='700'>
 </p>
 
 # <h1 align="center">Nexus</h1>
