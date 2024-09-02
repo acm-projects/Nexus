@@ -277,6 +277,8 @@ Students often create group chats for their courses to collaborate and share inf
 - <a href="https://www.utdnebula.com/docs/api-docs/nebula-api">Nebula API:</a>
   - Overview: An API developed by UTD Nebula Labs that provides data regarding UTD class sections as sourced from Coursebook. 
 
+<br>
+
 ## Roadblocks and Possible Solutions :construction: :bulb:
 
 - Having everyone’s machine work with React.
@@ -304,6 +306,8 @@ Students often create group chats for their courses to collaborate and share inf
 - <a href="https://nodejs.org/en/">Node.js</a>
 - <a href="https://git-scm.com/downloads">GitHub</a> - <a href="https://docs.github.com/en/get-started/quickstart/hello-world">Docs</a> - <a href="https://product.hubspot.com/blog/git-and-github-tutorial-for-beginners">Tutorial/a>
 - <a href="https://react.dev/learn/start-a-new-react-project">React</a>
+
+<br>
 
 ## Git Commands :notebook:
 
