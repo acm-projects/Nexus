@@ -6,6 +6,7 @@ import Features from './components/Features';
 import WhiteSection from './components/WhiteSection';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import UploadDoc from './pages/UploadDoc';
 
 function App() {
   return (
@@ -18,10 +19,12 @@ function App() {
               <Hero />
               <WhiteSection />
               <Features />
+              <UploadDoc />
             </main>
           } />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/upload" element={<UploadDoc />} />
         </Routes>
       </div>
     </Router>
