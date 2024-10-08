@@ -27,11 +27,12 @@ function App() {
               */}
               
               
+              
             </main>
           } />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/upload" element={<UploadDoc />} />
+          <Route path="/courses" element={<UploadDoc />} />
         </Routes>
       </div>
     </Router>

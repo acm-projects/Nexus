@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HiAcademicCap, HiCalculator, HiChat, HiUserCircle } from 'react-icons/hi';
 import Logo from '../assets/logo.svg';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,10 +45,16 @@ const Navbar = () => {
     <nav className={navbarClasses}>
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
-          <Link to="/" className="flex items-center transition duration-300 transform hover:scale-110">
+          <button 
+            className="flex items-center transition duration-300 transform hover:scale-110"
+            onClick={() => {
+              window.scrollTo(0, 0); // Scroll to top
+              navigate('/'); // Navigate to home page
+            }}
+          >
             <img src={Logo} alt="Nexus Logo" className="h-10 mr-2" />
             <span className={logoTextClasses}>Nexus</span>
-          </Link>
+          </button>
           <div className="flex space-x-6 items-center">
             <Link to="/courses" className={linkClasses}>
               <HiAcademicCap className="mr-1" /> Courses
