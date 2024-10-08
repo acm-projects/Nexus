@@ -26,6 +26,7 @@ const LoginPage = () => {
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter email"
               required
             />
           </div>
@@ -37,6 +38,7 @@ const LoginPage = () => {
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 pr-10"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password"
               required
             />
             <button

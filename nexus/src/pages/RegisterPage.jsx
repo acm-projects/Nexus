@@ -78,6 +78,7 @@ const RegisterPage = () => {
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter email"
                   required
                 />
               </div>
@@ -89,6 +90,7 @@ const RegisterPage = () => {
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 pr-10"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter password"
                   required
                 />
                 <button
@@ -111,6 +113,7 @@ const RegisterPage = () => {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="First name"
                     required
                   />
                 </div>
@@ -122,6 +125,7 @@ const RegisterPage = () => {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Last name"
                     required
                   />
                 </div>
@@ -133,6 +137,7 @@ const RegisterPage = () => {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Username"
                     required
                   />
                 </div>
@@ -168,6 +173,7 @@ const RegisterPage = () => {
                         }}
                         pattern="\d{4}"
                         maxLength="4"
+                        placeholder="Course #"
                         required
                       />
                     </div>
@@ -184,6 +190,7 @@ const RegisterPage = () => {
                         }}
                         pattern="\d{3}"
                         maxLength="3"
+                        placeholder="Course section"
                         required
                       />
                     </div>
