@@ -9,7 +9,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Implement login logic or somehting here idk
+    // ** Implement login logic or somehting here idk
     console.log('Login submitted', { email, password });
   };
 

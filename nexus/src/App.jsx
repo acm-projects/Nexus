@@ -19,6 +19,8 @@ function App() {
               <Hero />
               <WhiteSection />
               <Features />
+              {/* temp upload doc preview
+              */}
               <UploadDoc />
             </main>
           } />
