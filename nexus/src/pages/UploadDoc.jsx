@@ -64,7 +64,7 @@ const UploadDoc = () => {
     };
 
     return (
-        <div className="min-h-screen bg-nexus-blue-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen inset-0 bg-gradient-to-br from-nexus-blue-800 via-nexus-blue-900 to-nexus-blue-700 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-md">
                 <div>
                     <HiDocumentText className="mx-auto h-12 w-12 text-nexus-blue-600" />

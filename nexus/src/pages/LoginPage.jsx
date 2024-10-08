@@ -14,7 +14,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-nexus-blue-900 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-nexus-blue-800 via-nexus-blue-900 to-nexus-blue-700 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl font-bold mb-6 text-nexus-blue-800">Login to Nexus</h2>
         <form onSubmit={handleSubmit}>

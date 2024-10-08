@@ -7,6 +7,7 @@ import WhiteSection from './components/WhiteSection';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import UploadDoc from './pages/UploadDoc';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -20,8 +21,12 @@ function App() {
               <WhiteSection />
               <Features />
               {/* temp upload doc preview
-              */}
+              
               <UploadDoc />
+              <Footer />
+              */}
+              
+              
             </main>
           } />
           <Route path="/login" element={<LoginPage />} />
