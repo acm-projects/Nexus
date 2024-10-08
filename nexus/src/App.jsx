@@ -20,18 +20,15 @@ function App() {
               <Hero />
               <WhiteSection />
               <Features />
-              {/* temp upload doc preview
-              
-              <UploadDoc />
+              {/* temp footer doc preview
               <Footer />
               */}
-              
-              
               
             </main>
           } />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          {/*temp routing for upload doc*/}
           <Route path="/courses" element={<UploadDoc />} />
         </Routes>
       </div>
