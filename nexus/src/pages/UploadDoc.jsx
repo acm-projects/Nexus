@@ -85,13 +85,13 @@ const UploadDoc = () => {
 
     return (
         <motion.div 
-            className="min-h-screen inset-0 bg-gradient-to-br from-nexus-blue-800 via-nexus-blue-900 to-nexus-blue-700 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+            className="min-h-screen inset-0 bg-gradient-to-bl from-nexus-blue-700 via-nexus-blue-900 to-nexus-blue-600 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
             <motion.div 
-                className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-md"
+                className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-md bg-gradient-to-b from-nexus-blue-100 via-white to-nexus-blue-100"
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
@@ -104,7 +104,7 @@ const UploadDoc = () => {
                     <HiDocumentText className="mx-auto h-12 w-12 text-nexus-blue-600" />
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Upload Document</h2>
                 </motion.div>
-                <form className="mt-8 space-y-6 text-gray-700" onSubmit={handleUpload}>
+                <form className="mt-8 space-y-6 text-gray-700 " onSubmit={handleUpload}>
                     <motion.div 
                         className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center cursor-pointer"
                         onDragOver={handleDragOver}

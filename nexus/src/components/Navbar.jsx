@@ -48,8 +48,8 @@ const Navbar = () => {
           <button 
             className="flex items-center transition duration-300 transform hover:scale-110"
             onClick={() => {
-              window.scrollTo(0, 0); // Scroll to top
-              navigate('/'); // Navigate to home page
+              window.scrollTo(0, 0);
+              navigate('/');
             }}
           >
             <img src={Logo} alt="Nexus Logo" className="h-10 mr-2" />

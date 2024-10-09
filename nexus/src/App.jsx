@@ -15,20 +15,21 @@ function App() {
       <div className="min-h-screen bg-nexus-blue-900">
         <Navbar />
         <Routes>
-          <Route path="/" element={
-            <main>
-              <Hero />
-              <WhiteSection />
-              <Features />
-              {/* temp footer doc preview
-              <Footer />
-              */}
-              
-            </main>
-          } />
+          <Route
+            path="/"
+            element={
+              <main>
+                <Hero />
+                <WhiteSection />
+                <Features />
+                {/* temp footer doc preview
+                <Footer />
+                */}
+              </main>
+            }
+          />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          {/*temp routing for upload doc*/}
           <Route path="/courses" element={<UploadDoc />} />
         </Routes>
       </div>
