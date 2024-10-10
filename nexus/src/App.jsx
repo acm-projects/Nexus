@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import UploadDoc from './pages/UploadDoc';
 import CoursesPage from './pages/CoursesPage'
+import GradeCalculator from './pages/GradeCalculator';
 import Footer from './components/Footer';
 
 function App() {
@@ -28,10 +29,11 @@ function App() {
             </main>
           } />
           <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/grade-calculator" element={<GradeCalculator />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           {/*temp routing for upload doc*/}
-          {/* <Route path="/courses" element={<UploadDoc />} /> */}
+          <Route path="/upload" element={<UploadDoc />} />
         </Routes>
       </div>
     </Router>
