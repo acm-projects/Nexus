@@ -1,0 +1,9 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  body {
+    @apply bg-gradient-to-b from-nexus-blue-900 to-nexus-blue-800 text-white min-h-screen;
+  }
+}
