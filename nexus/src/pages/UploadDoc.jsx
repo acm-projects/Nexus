@@ -2,18 +2,28 @@ import React, { useState, useRef } from 'react';
 import { HiUpload, HiDocumentText } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
 import Select from 'react-select';
+import { useNavigate } from 'react-router-dom';
 
 const UploadDoc = () => {
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState('');
     const [documentName, setDocumentName] = useState('');
     const [location, setLocation] = useState(null);
+    const [unit, setUnit] = useState(null);
     const fileInputRef = useRef(null);
+    const navigate = useNavigate();
 
     const locationOptions = [
         { value: 'location1', label: 'Location 1' },
         { value: 'location2', label: 'Location 2' },
         { value: 'location3', label: 'Location 3' },
+    ];
+
+    const unitOptions = [
+        { value: 'unit1', label: 'Unit 1' },
+        { value: 'unit2', label: 'Unit 2' },
+        { value: 'unit3', label: 'Unit 3' },
+        { value: 'unit4', label: 'Unit 4' },
     ];
 
     const customStyles = {
@@ -70,17 +80,23 @@ const UploadDoc = () => {
             setMessage('Please select a location.');
             return;
         }
+        if (!unit) {
+            setMessage('Please select a unit.');
+            return;
+        }
 
-        // do something with backend or something idk
-        setMessage('Uploaded successfully');
-        // do something with backend or something idk
+        // Create a temporary URL for the file
+        const fileUrl = URL.createObjectURL(file);
 
-        // something like this maybe..
-        // const formData = new FormData();
-        // formData.append('file', file);
-        // formData.append('name', documentName);
-        // formData.append('location', location.value);
-        // await fetch('/api/upload', { method: 'POST', body: formData });
+        // Navigate to the DocPreview page with file information
+        navigate('/doc-preview', { 
+            state: { 
+                fileName: file.name, 
+                fileUrl,
+                selectedUnit: unit.value,
+                documentName: documentName
+            } 
+        });
     };
 
     return (
@@ -104,7 +120,7 @@ const UploadDoc = () => {
                     <HiDocumentText className="mx-auto h-12 w-12 text-nexus-blue-600" />
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Upload Document</h2>
                 </motion.div>
-                <form className="mt-8 space-y-6 text-gray-700 " onSubmit={handleUpload}>
+                <form className="mt-8 space-y-6 text-gray-700" onSubmit={handleUpload}>
                     <motion.div 
                         className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center cursor-pointer"
                         onDragOver={handleDragOver}
@@ -179,6 +195,25 @@ const UploadDoc = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.6 }}
+                    >
+                        <label htmlFor="unit" className="block text-sm font-medium text-gray-700">
+                            Select Unit
+                        </label>
+                        <Select
+                            id="unit"
+                            options={unitOptions}
+                            value={unit}
+                            onChange={setUnit}
+                            placeholder="Select a unit"
+                            styles={customStyles}
+                            className="mt-1 block w-full"
+                        />
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.7 }}
                     >
                         <motion.button
                             type="submit"

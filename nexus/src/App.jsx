@@ -7,6 +7,7 @@ import WhiteSection from './components/WhiteSection';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import UploadDoc from './pages/UploadDoc';
+import DocPreview from './pages/DocPreview';
 import Footer from './components/Footer';
 
 function App() {
@@ -22,15 +23,15 @@ function App() {
                 <Hero />
                 <WhiteSection />
                 <Features />
-                {/* temp footer doc preview
-                <Footer />
-                */}
               </main>
             }
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/courses" element={<UploadDoc />} />
+          <Route path="/doc-preview" element={<DocPreview />} />
+          {/* Temporarily route Grade Calculator to DocPreview */}
+          <Route path="/grade-calculator" element={<DocPreview />} />
         </Routes>
       </div>
     </Router>

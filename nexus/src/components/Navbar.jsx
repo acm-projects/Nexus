@@ -46,7 +46,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           <button 
-            className="flex items-center transition duration-300 transform hover:scale-110"
+            className="flex items-center transition duration-300 transform hover:scale-110 z-60"
             onClick={() => {
               window.scrollTo(0, 0);
               navigate('/');

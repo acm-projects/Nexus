@@ -7,3 +7,19 @@
     @apply bg-gradient-to-b from-nexus-blue-900 to-nexus-blue-800 text-white min-h-screen;
   }
 }
+
+/* Add these styles for the PDF viewer */
+.react-pdf__Page {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
+.react-pdf__Page__textContent {
+  pointer-events: none;
+}
+
+.react-pdf__Page__annotations.annotationLayer {
+  pointer-events: none;
+}
