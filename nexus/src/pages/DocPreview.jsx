@@ -131,8 +131,8 @@ const DocPreview = () => {
                     pageNumber={currentPage}
                     width={pageWidth * scale}
                     scale={scale}
-                    renderTextLayer={true}
-                    renderAnnotationLayer={true}
+                    renderTextLayer={false} // Disable text layer rendering
+                    renderAnnotationLayer={false} // Disable annotation layer rendering
                     renderInteractiveForms={false}
                   />
                 </Document>
