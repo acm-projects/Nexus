@@ -23,3 +23,14 @@
 .react-pdf__Page__annotations.annotationLayer {
   pointer-events: none;
 }
+
+.navbar-blur {
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Navbar content stays on top of the blur */
+.navbar-content {
+  position: relative;
+  z-index: 1;
+}
