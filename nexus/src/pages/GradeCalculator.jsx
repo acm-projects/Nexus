@@ -38,7 +38,7 @@ const GradeCalculator = () => {
                     className="mt-4 pt-20 pb-10 font-bold"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.5 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
                 >
                     Enter the name and weight of each category, as well as the desired final grade in the class.
                 </motion.h1>
@@ -46,7 +46,7 @@ const GradeCalculator = () => {
                     className="p-5 pr-6 pl-7 rounded-md text-xl text-white text-center"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 1.3 }}
+                    transition={{ duration: 0.5, delay: 1.0 }}
                 >
                     <strong>Grade Required:</strong><br />90%
                 </motion.h1>
@@ -55,7 +55,7 @@ const GradeCalculator = () => {
                     className="mb-6 px-2 pt-6 grid grid-cols-2 gap-6 categories"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 1.3 }}
+                    transition={{ duration: 0.5, delay: 1.0 }}
                 >
                     {categories.map((category, categoryIndex) => (
                         <div key={categoryIndex} className="rounded-lg p-6 bg-black bg-opacity-30 border-2 border-nexus-blue-400 category">
@@ -81,7 +81,7 @@ const GradeCalculator = () => {
                                     required
                                 />
                             </div>
-                            <div className="pt-5 grid grid-cols-3 gap-x-2 place-content-evenly">
+                            <div className="pt-5 grid grid-cols-3 gap-x-4 gap-y-2 place-content-evenly">
                                 <h1 className="text-white">Assignment</h1>
                                 <h1 className="text-white">Grade (%)</h1>
                                 <h1 className="text-white">Weight (%)</h1>
@@ -89,7 +89,7 @@ const GradeCalculator = () => {
                                     <React.Fragment key={assignmentIndex}>
                                         <input
                                             type="text"
-                                            className="mt-1 text-xs w-5/6 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
+                                            className="mt-1 text-xs h-8 w-5/6 block w-full rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
                                             value={assignment.assignment}
                                             onChange={(e) => handleAssignmentChange(categoryIndex, assignmentIndex, "assignment", e.target.value)}
                                             placeholder="Name"
@@ -97,7 +97,7 @@ const GradeCalculator = () => {
                                         />
                                         <input
                                             type="number"
-                                            className="mt-1 text-xs w-5/6 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
+                                            className="mt-1 text-xs h-8 w-5/6 block w-full rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
                                             value={assignment.grade}
                                             onChange={(e) => handleAssignmentChange(categoryIndex, assignmentIndex, "grade", e.target.value)}
                                             placeholder="Grade"
@@ -105,7 +105,7 @@ const GradeCalculator = () => {
                                         />
                                         <input
                                             type="number"
-                                            className="mt-1 text-xs w-5/6 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
+                                            className="mt-1 text-xs h-8 w-5/6 block w-full rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
                                             value={assignment.weight}
                                             onChange={(e) => handleAssignmentChange(categoryIndex, assignmentIndex, "weight", e.target.value)}
                                             placeholder="Weight"
@@ -132,7 +132,7 @@ const GradeCalculator = () => {
                     className="mb-4 flex flex-row justify-between items-center gap-4"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 2.1 }}
+                    transition={{ duration: 0.5, delay: 1.5 }}
                 >
                     <div className="flex flex-col justify-start items-start gap-2">
                         <h1 className="pt-3 text-xl text-nexus-blue-200"><strong>Remaining Assignment Weight:</strong> 15</h1>
