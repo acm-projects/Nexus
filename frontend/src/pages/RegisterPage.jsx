@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HiEye, HiEyeOff, HiPlus, HiX } from 'react-icons/hi';
 import { motion } from 'framer-motion';
 import Select from 'react-select';
@@ -50,20 +50,29 @@ const RegisterPage = () => {
     setShowWarning(false);
   };
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (step === 1) {
       setStep(2);
     } else {
       // Implement registration logic here
-      console.log('Registration submitted', {
+      const response = await axios.post('http://localhost:3000/api/auth/register', {
         email,
         password,
         firstName,
         lastName,
         username,
-        userCourses,
-      });
+        userCourses
+      })
+
+      if (response.status === 201) {
+        console.log('User created successfully', response.data);
+        navigate('/');
+        
+      } else {
+        console.error('Error creating user:', response.data.message);
+      }
     }
   };
 

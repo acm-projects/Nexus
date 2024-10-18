@@ -1,18 +1,42 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 import { motion } from 'framer-motion';
+import axios from 'axios'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState('')
+  const [token, setToken] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Implement login logic here
-    console.log('Login submitted', { email, password });
-  };
+  const navigate = useNavigate();
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  
+  try {
+    const response = await axios.post('http://localhost:3000/api/auth/login', { email, password })
+    console.log('Server response:', response.data)
+
+    if (response.data.token) {
+      setToken(response.data.token)
+      setMessage('Login successful')
+      console.log('Login successful, redirecting...')
+      navigate('/');
+    } else {
+      setMessage('Login failed: No token received')
+      console.log('Login failed: No token received')
+    }
+
+  } catch (error) {
+    const errorMessage = error.response?.data?.error || error.message
+    setMessage(`Login failed: ${errorMessage}`)
+    console.error('Login error:', errorMessage)
+  }
+}
 
   return (
     <motion.div
