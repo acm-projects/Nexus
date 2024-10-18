@@ -7,9 +7,10 @@ import WhiteSection from './components/WhiteSection';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import UploadDoc from './pages/UploadDoc';
-import CoursesPage from './pages/CoursesPage'
+import CoursesPage from './pages/CoursesPage';
 import GradeCalculator from './pages/GradeCalculator';
 import Footer from './components/Footer';
+import SectionChat from './pages/SectionChat'; 
 
 function App() {
   return (
@@ -25,15 +26,14 @@ function App() {
               {/* temp footer doc preview
               <Footer />
               */}
-              
             </main>
           } />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/grade-calculator" element={<GradeCalculator />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          {/*temp routing for upload doc*/}
           <Route path="/upload" element={<UploadDoc />} />
+          <Route path="/section-chat" element={<SectionChat />} />
         </Routes>
       </div>
     </Router>
