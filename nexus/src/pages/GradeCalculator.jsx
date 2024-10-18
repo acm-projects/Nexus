@@ -32,49 +32,59 @@ const GradeCalculator = () => {
     const [classGrade, setClassGrade] = useState('');
 
     return (
-        <div className="bg-gradient-to-br from-nexus-blue-800 via-nexus-blue-900 to-nexus-blue-700 h-screen w-screen">
+        <div className="absolute inset-0 bg-gradient-to-br from-nexus-blue-800 via-nexus-blue-900 to-nexus-blue-700 h-dvh w-screen">
             <div className="flex flex-col justify-center items-center">
                 <motion.h1
-                    className="pt-20 pb-10 font-bold"
+                    className="mt-4 pt-20 pb-10 font-bold"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.5 }}
                 >
                     Enter the name and weight of each category, as well as the desired final grade in the class.
                 </motion.h1>
-                <h1 className="p-5 pr-6 pl-7 rounded-full text-xl text-nexus-blue-900 bg-gradient-to-b from-nexus-blue-200 via-white to-nexus-blue-200 text-center">
+                <motion.h1 
+                    className="p-5 pr-6 pl-7 rounded-md text-xl text-white text-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1.3 }}
+                >
                     <strong>Grade Required:</strong><br />90%
-                </h1>
+                </motion.h1>
                 {/* grid of categories */}
-                <div className="pl-2 pr-2 pt-6 grid grid-cols-2 gap-4 categories">
+                <motion.div 
+                    className="mb-6 px-2 pt-6 grid grid-cols-2 gap-6 categories"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1.3 }}
+                >
                     {categories.map((category, categoryIndex) => (
-                        <div key={categoryIndex} className="rounded-tl-lg rounded-br-lg p-2 bg-nexus-blue-200 category">
+                        <div key={categoryIndex} className="rounded-lg p-6 bg-black bg-opacity-30 border-2 border-nexus-blue-400 category">
                             <div className="flex flex-row items-center">
-                                <label htmlFor={`category-${categoryIndex}`} className="pr-3 block text-sm font-medium text-nexus-blue-600">Category</label>
+                                <label htmlFor={`category-${categoryIndex}`} className="pr-3 block text-sm font-medium text-white">Category</label>
                                 <input
                                     type="text"
                                     id={`category-${categoryIndex}`}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
+                                    className="mt-1 text-sm block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
                                     value={category.name}
                                     onChange={(e) => handleCategoryChange(categoryIndex, "name", e.target.value)}
                                     placeholder="Enter Category"
                                     required
                                 />
-                                <label htmlFor={`category-weight-${categoryIndex}`} className="pl-3 pr-3 block text-xs font-medium text-nexus-blue-600">Weight (%)</label>
+                                <label htmlFor={`category-weight-${categoryIndex}`} className="pl-3 pr-3 block text-xs font-medium text-white">Weight (%)</label>
                                 <input
                                     type="number"
                                     id={`category-weight-${categoryIndex}`}
-                                    className="mt-1 pr-0 pl-3 w-1/4 rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
+                                    className="mt-1 pr-0 pl-3 w-1/4 rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
                                     value={category.weight}
                                     onChange={(e) => handleCategoryChange(categoryIndex, "weight", e.target.value)}
                                     placeholder=""
                                     required
                                 />
                             </div>
-                            <div className="pt-5 grid grid-cols-3 place-content-evenly">
-                                <h1 className="text-nexus-blue-900">Assignment</h1>
-                                <h1 className="text-nexus-blue-900">Grade (%)</h1>
-                                <h1 className="text-nexus-blue-900">Weight (%)</h1>
+                            <div className="pt-5 grid grid-cols-3 gap-x-2 place-content-evenly">
+                                <h1 className="text-white">Assignment</h1>
+                                <h1 className="text-white">Grade (%)</h1>
+                                <h1 className="text-white">Weight (%)</h1>
                                 {category.assignments.map((assignment, assignmentIndex) => (
                                     <React.Fragment key={assignmentIndex}>
                                         <input
@@ -82,7 +92,7 @@ const GradeCalculator = () => {
                                             className="mt-1 text-xs w-5/6 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
                                             value={assignment.assignment}
                                             onChange={(e) => handleAssignmentChange(categoryIndex, assignmentIndex, "assignment", e.target.value)}
-                                            placeholder="Enter Assignment"
+                                            placeholder="Name"
                                             required
                                         />
                                         <input
@@ -90,7 +100,7 @@ const GradeCalculator = () => {
                                             className="mt-1 text-xs w-5/6 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
                                             value={assignment.grade}
                                             onChange={(e) => handleAssignmentChange(categoryIndex, assignmentIndex, "grade", e.target.value)}
-                                            placeholder="Enter Grade"
+                                            placeholder="Grade"
                                             required
                                         />
                                         <input
@@ -98,27 +108,32 @@ const GradeCalculator = () => {
                                             className="mt-1 text-xs w-5/6 block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
                                             value={assignment.weight}
                                             onChange={(e) => handleAssignmentChange(categoryIndex, assignmentIndex, "weight", e.target.value)}
-                                            placeholder="Enter Weight"
+                                            placeholder="Weight"
                                             required
                                         />
                                     </React.Fragment>
                                 ))}
                             </div>
                             <div className = "flex flex-row justify-around items-center">
-                            <h1 className="pt-3 text-xl text-nexus-blue-900"><strong>Category Grade:</strong> 90%</h1>
+                            <h1 className="pt-3 text-xl text-white"><strong>Category Grade:</strong> 90%</h1>
                             <button
                                 type="button"
                                 onClick={() => addAssignmentRow(categoryIndex)}
-                                className="mt-4 p-1 pr-2 pl-2 bg-nexus-blue-300 text-white text-xl font-bold rounded-md transition duration 300 transform hover:bg-nexus-blue-900"
+                                className="mt-4 p-1 pr-2 pl-2 bg-nexus-blue-300 text-white text-xl font-bold rounded-md transition duration 300 transform hover:text-nexus-blue-900 transform hover:bg-nexus-blue-100"
                             >
                                 +
                             </button>
                             </div>
                         </div>
                     ))}
-                </div>
+                </motion.div>
 
-                <div className="flex flex-row justify-between items-center gap-4">
+                <motion.div 
+                    className="mb-4 flex flex-row justify-between items-center gap-4"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 2.1 }}
+                >
                     <div className="flex flex-col justify-start items-start gap-2">
                         <h1 className="pt-3 text-xl text-nexus-blue-200"><strong>Remaining Assignment Weight:</strong> 15</h1>
                         <div className="flex flex-row items-center">
@@ -140,7 +155,7 @@ const GradeCalculator = () => {
                     >
                     Add Category
                     </button>
-                </div>
+                </motion.div>
 
             </div>
         </div>
