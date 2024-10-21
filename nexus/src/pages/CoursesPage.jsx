@@ -92,7 +92,9 @@ const CoursesPage = () =>{
                         Upload Doc
                     </Link>
                     {/* temporary SuperDoc link location */}
-                    <h1 className = "px-4 py-3 rounded-lg bg-nexus-blue-200 text-white fixed bottom-6 right-36 transition duration-300 hover:text-white transform hover:bg-nexus-blue-300">SuperDoc</h1>
+                    <Link to ="doc-preview" className = "px-4 py-3 rounded-lg bg-nexus-blue-200 text-white fixed bottom-6 right-36 transition duration-300 hover:text-white transform hover:bg-nexus-blue-300">
+                    SuperDoc
+                    </Link>
                 </motion.div>
 
             </div>

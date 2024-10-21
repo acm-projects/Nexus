@@ -89,7 +89,7 @@ const UploadDoc = () => {
         const fileUrl = URL.createObjectURL(file);
 
         // Navigate to the DocPreview page with file information
-        navigate('/grade-calculator', { 
+        navigate('/doc-preview', { 
             state: { 
                 fileName: file.name, 
                 fileUrl,
