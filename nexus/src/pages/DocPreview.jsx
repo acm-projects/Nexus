@@ -27,7 +27,10 @@ const DocPreview = () => {
         .then(blob => {
           setPdfFile(new Blob([blob], { type: 'application/pdf' }));
         })
-        .catch(error => console.error('Error fetching PDF:', error));
+        .catch(error => {
+          console.error('Error fetching PDF:', error);
+          setPdfFile(null);
+        });
     } else {
       setPdfFile(null);
     }
@@ -58,7 +61,7 @@ const DocPreview = () => {
   };
 
   const handleUpload = () => {
-    navigate('/courses', { state: { selectedUnit: currentUnit } });
+    navigate('/upload');
   };
 
   const zoomIn = () => {
@@ -67,6 +70,79 @@ const DocPreview = () => {
 
   const zoomOut = () => {
     setScale(prevScale => Math.max(prevScale - 0.1, 0.5));
+  };
+
+  const renderContent = () => {
+    if (currentUnit === selectedUnit && pdfFile) {
+      return (
+        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+          <div className="flex justify-between items-center p-4 border-b">
+            <div className="flex items-center">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage <= 1}
+                className="px-4 py-2 bg-nexus-blue-600 text-white rounded disabled:opacity-50 mr-2"
+              >
+                Previous
+              </button>
+              <span className="mx-2">Page {currentPage} of {numPages}</span>
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, numPages))}
+                disabled={currentPage >= numPages}
+                className="px-4 py-2 bg-nexus-blue-600 text-white rounded disabled:opacity-50 ml-2"
+              >
+                Next
+              </button>
+            </div>
+            <div className="flex items-center">
+              <button
+                onClick={zoomOut}
+                className="px-4 py-2 bg-nexus-blue-600 text-white rounded mr-2"
+              >
+                <HiZoomOut />
+              </button>
+              <span className="mx-2 text-gray-700">{Math.round(scale * 100)}%</span>
+              <button
+                onClick={zoomIn}
+                className="px-4 py-2 bg-nexus-blue-600 text-white rounded ml-2"
+              >
+                <HiZoomIn />
+              </button>
+            </div>
+          </div>
+          <div className="flex justify-center p-4 bg-gray-50">
+            <Document
+              file={pdfFile}
+              onLoadSuccess={onDocumentLoadSuccess}
+              className="flex flex-col items-center"
+            >
+              <Page
+                pageNumber={currentPage}
+                width={pageWidth * scale}
+                scale={scale}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+                renderInteractiveForms={false}
+              />
+            </Document>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="bg-white shadow-lg rounded-lg overflow-hidden p-8 text-center">
+          <HiUpload className="mx-auto text-6xl text-nexus-blue-500 mb-4" />
+          <h2 className="text-2xl font-semibold text-gray-800 mb-2">No Document Uploaded</h2>
+          <p className="text-gray-600 mb-4">There is currently no document uploaded for this unit.</p>
+          <button 
+            className="bg-nexus-blue-600 text-white py-2 px-4 rounded hover:bg-nexus-blue-700 transition duration-300"
+            onClick={handleUpload}
+          >
+            Upload Document
+          </button>
+        </div>
+      );
+    }
   };
 
   return (
@@ -85,72 +161,7 @@ const DocPreview = () => {
           <h1 className="text-2xl font-bold mb-4 text-gray-800">
             {currentUnit === selectedUnit && documentName ? documentName : `Unit ${currentUnit.slice(-1)}`}
           </h1>
-          {currentUnit === selectedUnit && pdfFile ? (
-            <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-              <div className="flex justify-between items-center p-4 border-b">
-                <div className="flex items-center">
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage <= 1}
-                    className="px-4 py-2 bg-nexus-blue-600 text-white rounded disabled:opacity-50 mr-2"
-                  >
-                    Previous
-                  </button>
-                  <span className="mx-2">Page {currentPage} of {numPages}</span>
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, numPages))}
-                    disabled={currentPage >= numPages}
-                    className="px-4 py-2 bg-nexus-blue-600 text-white rounded disabled:opacity-50 ml-2"
-                  >
-                    Next
-                  </button>
-                </div>
-                <div className="flex items-center">
-                  <button
-                    onClick={zoomOut}
-                    className="px-4 py-2 bg-nexus-blue-600 text-white rounded mr-2"
-                  >
-                    <HiZoomOut />
-                  </button>
-                  <span className="mx-2 text-gray-700">{Math.round(scale * 100)}%</span>
-                  <button
-                    onClick={zoomIn}
-                    className="px-4 py-2 bg-nexus-blue-600 text-white rounded ml-2"
-                  >
-                    <HiZoomIn />
-                  </button>
-                </div>
-              </div>
-              <div className="flex justify-center p-4 bg-gray-50">
-                <Document
-                  file={pdfFile}
-                  onLoadSuccess={onDocumentLoadSuccess}
-                  className="flex flex-col items-center"
-                >
-                  <Page
-                    pageNumber={currentPage}
-                    width={pageWidth * scale}
-                    scale={scale}
-                    renderTextLayer={false} // Disable text layer rendering
-                    renderAnnotationLayer={false} // Disable annotation layer rendering
-                    renderInteractiveForms={false}
-                  />
-                </Document>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-white shadow-lg rounded-lg overflow-hidden p-8 text-center">
-              <HiUpload className="mx-auto text-6xl text-nexus-blue-500 mb-4" />
-              <h2 className="text-2xl font-semibold text-gray-800 mb-2">No Document Uploaded</h2>
-              <p className="text-gray-600 mb-4">There is currently no document uploaded for this unit.</p>
-              <button 
-                className="bg-nexus-blue-600 text-white py-2 px-4 rounded hover:bg-nexus-blue-700 transition duration-300"
-                onClick={handleUpload}
-              >
-                Upload Document
-              </button>
-            </div>
-          )}
+          {renderContent()}
         </div>
       </div>
     </div>
