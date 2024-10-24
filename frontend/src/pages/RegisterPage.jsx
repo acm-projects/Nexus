@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { HiEye, HiEyeOff, HiPlus, HiX } from 'react-icons/hi';
 import { motion } from 'framer-motion';
 import Select from 'react-select';
+import axios from 'axios'
 
 const RegisterPage = () => {
   const [step, setStep] = useState(1);
@@ -14,7 +15,7 @@ const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [courses, setCourses] = useState([]);
   const [userCourses, setUserCourses] = useState([
-    { course: '', courseNumber: '', courseSection: '' },
+    { courseCode: '', courseNumber: '', courseSection: '' },
   ]);
   const [showWarning, setShowWarning] = useState(false);
 
@@ -33,7 +34,7 @@ const RegisterPage = () => {
 
   const isValidCourse = (course) => {
     return (
-      course.course &&
+      course.courseCode &&
       /^\d{4}$/.test(course.courseNumber) &&
       /^\d{3}$/.test(course.courseSection)
     );
@@ -50,29 +51,48 @@ const RegisterPage = () => {
     setShowWarning(false);
   };
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (step === 1) {
       setStep(2);
     } else {
       // Implement registration logic here
-      const response = await axios.post('http://localhost:3000/api/auth/register', {
+      try {
+
+        const formattedCourses = userCourses.map(course => ({
+          courseCode: course.courseCode, 
+          courseNumber: course.courseNumber,
+          courseSection: course.courseSection,
+          //profName: course.profName || null
+        }));
+
+        const response = await axios.post('http://localhost:3000/api/auth/register', {
+          email,
+          password,
+          firstName,
+          lastName,
+          username,
+          userCourses: formattedCourses
+        });
+
+        if (response.status === 201) {
+          const { token } = response.data;
+          localStorage.setItem('token', token); 
+          navigate('/'); 
+        }
+      } catch (error) {
+        console.error('Registration failed:', error.response?.data?.message || error.message);
+        console.error('Error occurred during registration:', error);
+      }
+      console.log('Registration submitted', {
         email,
         password,
         firstName,
         lastName,
         username,
-        userCourses
-      })
-
-      if (response.status === 201) {
-        console.log('User created successfully', response.data);
-        navigate('/');
-        
-      } else {
-        console.error('Error creating user:', response.data.message);
-      }
+        userCourses,
+      });
     }
   };
 
@@ -81,7 +101,7 @@ const RegisterPage = () => {
     if (userCourses.length < 5 && isValidCourse(lastCourse)) {
       setUserCourses([
         ...userCourses,
-        { course: '', courseNumber: '', courseSection: '' },
+        { courseCode: '', courseNumber: '', courseSection: '' },
       ]);
       setShowWarning(false);
     } else {
@@ -275,12 +295,12 @@ const RegisterPage = () => {
                         id={`course-${index}`}
                         options={courseOptions}
                         value={courseOptions.find(
-                          (option) => option.value === userCourse.course
+                          (option) => option.value === userCourse.courseCode
                         )}
                         onChange={(selectedOption) =>
                           handleCourseChange(
                             index,
-                            'course',
+                            'courseCode',
                             selectedOption.value
                           )
                         }

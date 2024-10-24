@@ -13,17 +13,19 @@ const ChatMessagesTable = 'ChatMessages'
 
 
 
-export async function saveMessage(roomId, userId, message) {
+export async function saveMessage(roomId, userId, content, type = 'text') {
   const params = {
     TableName: ChatMessagesTable,
     Item: {
       roomId: roomId,
       timestamp: Date.now(),
       userId: userId,
-      message: message
+      content: content,
+      type: type
     }
-  }
-  await dynamodb.put(params).promise()
+  };
+
+  await dynamodb.put(params).promise();
 }
 
 export async function fetchMessages(roomId, limit = 50) {
@@ -39,6 +41,33 @@ export async function fetchMessages(roomId, limit = 50) {
 
   const result = await dynamodb.query(params).promise()
   return result.Items.reverse() // reverse to get the oldest messages first
+}
+
+export async function getChatRoom(roomId) {
+  const params = {
+    TableName: 'ChatRooms',
+    Key: { roomId: roomId } // Ensure the key structure matches your table schema
+  };
+
+  try {
+    const result = await dynamodb.get(params).promise(); // Using DocumentClient's get method
+
+    if (!result.Item) {
+      throw new Error('Chat room not found');
+    }
+
+    const chatRoom = {
+      roomId: result.Item.roomId, // Assuming roomId is a string in DocumentClient
+      roomName: result.Item.roomName,
+      createdAt: result.Item.createdAt,
+      members: result.Item.members ? result.Item.members : [] // Handle the case where members might be undefined
+    };
+
+    return chatRoom;
+  } catch (error) {
+    console.error(`Error retrieving chat room: ${error}`);
+    //throw error; // Rethrow the error to handle it in your API
+  }
 }
 
 export { dynamodb, s3, S3_BUCKET }

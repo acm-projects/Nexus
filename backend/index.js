@@ -15,6 +15,7 @@ import addCategory from './api/gradeCalculator.js'
 import addAssignment from './api/gradeCalculator.js'
 import calculateGrade from './api/gradeCalculator.js'
 import getCourses from './api/gradeCalculator.js'
+import getOnboardedCourses from './api/misc.js' 
 
 dotenv.config()
 
@@ -49,6 +50,7 @@ app.use('/api/gradeCalculator', addCategory)
 app.use('/api/gradeCalculator', addAssignment)
 app.use('/api/gradeCalculator', calculateGrade)
 app.use('/api/gradeCalculator', getCourses)
+app.use('/api/misc', getOnboardedCourses)
 
 
 

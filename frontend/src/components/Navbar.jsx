@@ -24,7 +24,7 @@ const Navbar = () => {
   }, []);
 
   const navbarClasses = `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-    isScrolled ? 'bg-white bg-opacity-90 shadow-md' : 'bg-transparent'
+    isScrolled ? 'bg-white bg-opacity-90 shadow-md navbar-blur' : 'bg-transparent'
   }`;
 
   const linkClasses = `hover:text-nexus-blue-200 flex items-center relative group ${
@@ -44,9 +44,9 @@ const Navbar = () => {
   return (
     <nav className={navbarClasses}>
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center py-4 navbar-content">
           <button 
-            className="flex items-center transition duration-300 transform hover:scale-110"
+            className="flex items-center transition duration-300 transform hover:scale-110 z-60"
             onClick={() => {
               window.scrollTo(0, 0);
               navigate('/');

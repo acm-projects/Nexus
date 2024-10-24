@@ -1,7 +1,7 @@
 import { getUserData, getUserCourses, generateRoomName } from "./utils/onboardingHelpers.js";
 import { saveMessage, fetchMessages } from "./utils/awsConfig.js";
 
-export function configureSocket(io) {
+/*export function configureSocket(io) {
   io.on('connection', async (socket) => {
     const userId = socket.handshake.query.userId
     const userData = await getUserData(userId)
@@ -17,7 +17,8 @@ export function configureSocket(io) {
 
     socket.on('chatMessage', async (data) => {
       const { room, message } = data
-      await saveMessage(room, userData.username, message)
+      await saveMessage(room, userData.userId, message)
+      console.log(message)
       io.to(room).emit('message', { userId: userData.username, message });
     });
 
@@ -30,6 +31,49 @@ export function configureSocket(io) {
     socket.on('fileUploaded', (data) => {
       const { room, fileUrl } = data
       io.to(room).emit('fileUploaded', { userId: userData.username, fileUrl });
+    });
+  });
+}*/
+
+export function configureSocket(io) {
+  io.on('connection', async (socket) => {
+    const userId = socket.handshake.query.userId;
+    const roomId = socket.handshake.query.roomId; // Add this
+
+    console.log(`User ${userId} connecting to room ${roomId}`); // Debug log
+
+    // Join the room directly using the roomId from the query
+    if (roomId) {
+      socket.join(roomId);
+    }
+
+    socket.on('chatMessage', async (data) => {
+      try {
+        const { roomId, userId, message } = data;
+        
+        // Save message with consistent structure
+        await saveMessage(roomId, userId, message, 'text');
+        
+        // Emit to room with same structure as saved message
+        io.to(roomId).emit('message', {
+          messageId: Date.now().toString(),
+          roomId,
+          userId,
+          message,
+          timestamp: new Date().toISOString(),
+          type: 'text'
+        });
+
+      } catch (error) {
+        console.error('Error handling chat message:', error);
+      }
+    });
+
+    socket.on('disconnect', () => {
+      if (roomId) {
+        socket.leave(roomId);
+        console.log(`User ${userId} disconnected from room ${roomId}`);
+      }
     });
   });
 }

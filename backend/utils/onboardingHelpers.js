@@ -1,77 +1,6 @@
 import { dynamodb } from "./awsConfig.js";
 import  { v4 as uuidv4 } from 'uuid';
 
-/*export const getGroupsByCourseId = async (courseId, groupType) => {
-  const params = {
-    TableName: 'OnboardingDB',
-    Key: {
-      courseId,
-      groupType
-    }
-  }
-
-  const result = await dynamodb.get(params).promise()
-  return result.Item
-
-}
-
-export const createGroup = async (courseId, groupType) => {
-  const newGroup = {
-    courseId,
-    groupType,
-    members: []
-  }
-
-  const params = {
-    TableName: 'OnboardingDB',
-    Item: newGroup
-  }
-
-  await dynamodb.put(params).promise()
-  return newGroup
-}
-
-export const addUserToGroup = async (courseId, userId) => {
-  try {
-    const params = {
-      TableName: 'OnboardingDB',
-      Key: { courseId },
-      UpdateExpression: 'ADD members :userId',
-      ExpressionAttributeValues: {
-        ':userId': dynamodb.createSet([userId])
-      }
-    }
-
-    await dynamodb.update(params).promise();
-    console.log(`User ${userId} added to group ${courseId}`)
-
-  } catch (error) {
-    console.log(`Failed to add user to group: ${error}`)
-  }
-}
-
-export const onboardUserToGroups = async (userId, courses) => {
-  for (let course of courses) {
-    const { courseCode, courseNumber, sectionCode, professorName } = course
-    const courseId = `${courseCode}_${professorName}`
-    const sectionId = `${courseId}_${sectionCode}`
-
-    // General chat for the course
-    let generalChatGroup = await getGroupsByCourseId(courseId, 'general')
-    if (!generalChatGroup) {
-      generalChatGroup = await createGroup(courseId, 'general')
-    }
-    await addUserToGroup(generalChatGroup.courseId, userId)
-
-    // Section-specific chat
-    let sectionChatGroup = await getGroupsByCourseId(sectionId, 'section')
-    if (!sectionChatGroup) {
-      sectionChatGroup = await createGroup(sectionId, 'section')
-    }
-    await addUserToGroup(sectionChatGroup.courseId, userId)
-  }
-}
-*/
 
 export async function getUserData(userId) {
   const params = {
@@ -93,8 +22,8 @@ export async function getUserCourses(userId) {
   return result.Item.courses
 }
 
-export function generateRoomName(courseCode, courseNumber, professorName, sectionCode = null) {
-  const base = `${professorName} ${courseCode} ${courseNumber}`
+export function generateRoomName(courseCode, courseNumber, sectionCode) {
+  const base = `${courseCode} ${courseNumber}`
   return sectionCode ? `${base}.${sectionCode}` : base
 }
 
@@ -161,10 +90,10 @@ export async function onboardUser(userId, firstName, lastName, username, courses
     await dynamodb.put(onboardingParams).promise()
 
     for (const course of courses) {
-      const { courseCode, courseNumber, sectionCode, professorName } = course
+      const { courseCode, courseNumber, courseSection} = course
       
-      const generalRoomName = generateRoomName(courseCode, courseNumber, professorName)
-      const sectionRoomName = generateRoomName(courseCode, courseNumber, professorName, sectionCode)
+      const generalRoomName = generateRoomName(courseCode, courseNumber)
+      const sectionRoomName = generateRoomName(courseCode, courseNumber, courseSection)
 
       const generalRoom = await createOrGetChatRoom(generalRoomName)
       await addUserToChatRoom(generalRoom.roomId, userId)
@@ -179,3 +108,41 @@ export async function onboardUser(userId, firstName, lastName, username, courses
     return { success: false, message: 'Unable to complete user onboarding', error: error.message }
   }
 }
+
+export const getSectionChatRooms = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+      // Step 1: Fetch the user's courses using helper
+      const userCourses = await getUserCourses(userId);
+      
+      if (!userCourses || userCourses.length === 0) {
+          return res.status(404).json({ message: "No courses found for the user." });
+      }
+
+      // Step 2: Prepare a DynamoDB query to fetch chat rooms
+      const courseRoomIds = userCourses.map(course => `${course.courseCode}.${course.courseNumber}.${course.sectionCode}`);
+
+      // Use a batch query to get all relevant rooms
+      const params = {
+          RequestItems: {
+              'ChatRooms': {
+                  Keys: courseRoomIds.map(roomId => ({ roomId })),
+              },
+          },
+      };
+
+      // Step 3: Execute the query
+      const data = await dynamodb.batchGet(params).promise();
+
+      if (!data || data.Responses.ChatRooms.length === 0) {
+          return res.status(404).json({ message: "No chat rooms found for the user." });
+      }
+
+      // Step 4: Return the filtered chat rooms
+      return res.status(200).json({ chatRooms: data.Responses.ChatRooms });
+  } catch (error) {
+      console.error('Error fetching section chat rooms:', error);
+      return res.status(500).json({ message: 'Internal Server Error', error });
+  }
+};
