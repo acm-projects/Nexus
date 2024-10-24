@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HiOutlineDocument, HiUpload, HiChevronLeft, HiChevronRight } from 'react-icons/hi';
+import { HiAcademicCap, HiChevronLeft, HiChevronRight, HiDocumentText } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const DocSideBar = ({ units, selectedUnit, onUnitChange, onToggle }) => {
+const SectionSideBar = ({ courses, selectedCourse, onCourseChange, onToggle }) => {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const handleUploadClick = () => {
-    navigate('/upload');
+  const handleSuperDocClick = () => {
+    navigate('/doc-preview', {
+      state: {
+        fileName: 'SuperDoc.pdf',
+        fileUrl: 'path/to/your/superdoc.pdf',
+        selectedUnit: 'unit1',
+        documentName: 'SuperDoc'
+      }
+    });
   };
 
   const toggleSidebar = () => {
@@ -48,9 +55,9 @@ const DocSideBar = ({ units, selectedUnit, onUnitChange, onToggle }) => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <h2 className="text-2xl font-bold text-nexus-blue-100 mb-4">Units</h2>
+            <h2 className="text-2xl font-bold text-nexus-blue-100 mb-4">Courses</h2>
             <ul className="space-y-2">
-              {units.map((unit, index) => (
+              {courses.map((course, index) => (
                 <motion.li 
                   key={index}
                   initial={{ opacity: 0, x: -20 }}
@@ -58,11 +65,11 @@ const DocSideBar = ({ units, selectedUnit, onUnitChange, onToggle }) => {
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                 >
                   <button 
-                    onClick={() => onUnitChange(unit)}
-                    className={`flex items-center w-full p-2 rounded hover:bg-nexus-blue-700 text-nexus-blue-200 hover:text-white transition-colors duration-200 ${selectedUnit === unit ? 'bg-nexus-blue-700 text-white' : ''}`}
+                    onClick={() => onCourseChange(course)}
+                    className={`flex items-center w-full p-2 rounded hover:bg-nexus-blue-700 text-nexus-blue-200 hover:text-white transition-colors duration-200 ${selectedCourse === course ? 'bg-nexus-blue-700 text-white' : ''}`}
                   >
-                    <HiOutlineDocument className="mr-2" />
-                    {`Unit ${unit.slice(-1)}`}
+                    <HiAcademicCap className="mr-2" />
+                    {`Course ${course}`}
                   </button>
                 </motion.li>
               ))}
@@ -77,15 +84,15 @@ const DocSideBar = ({ units, selectedUnit, onUnitChange, onToggle }) => {
         transition={{ duration: 0.3 }}
       >
         <button 
-          onClick={handleUploadClick}
+          onClick={handleSuperDocClick}
           className="flex items-center justify-center w-full bg-nexus-blue-600 text-white py-2 px-4 rounded-md hover:bg-nexus-blue-500 transition-colors duration-200"
         >
-          <HiUpload className="mr-2" />
-          Upload Document
+          <HiDocumentText className="mr-2" />
+          Super Doc
         </button>
       </motion.div>
     </motion.aside>
   );
 };
 
-export default DocSideBar;
+export default SectionSideBar;
