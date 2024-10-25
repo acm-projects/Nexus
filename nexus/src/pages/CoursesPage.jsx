@@ -3,14 +3,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaBookOpen } from "react-icons/fa";
 import { motion } from 'framer-motion';
-import { HiAcademicCap, HiUserGroup, HiDocumentText } from 'react-icons/hi';
 
 const CoursesPage = () => {
     const navigate = useNavigate();
     const courses = [1, 2, 3, 4, 5, 6];
 
     const handleCourseClick = (courseNumber) => {
-        navigate('/section-chat');
+        navigate(`/section-chat/${courseNumber}`);
     };
 
     const renderWelcomeView = () => (
