@@ -9,8 +9,9 @@ import RegisterPage from './pages/RegisterPage';
 import UploadDoc from './pages/UploadDoc';
 import CoursesPage from './pages/CoursesPage';
 import GradeCalculator from './pages/GradeCalculator';
-import Footer from './components/Footer';
 import SectionChat from './pages/SectionChat'; 
+import DocPreview from './pages/DocPreview'; 
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/upload" element={<UploadDoc />} />
           <Route path="/section-chat" element={<SectionChat />} />
+          <Route path="/doc-preview" element={<DocPreview />} />
         </Routes>
       </div>
     </Router>

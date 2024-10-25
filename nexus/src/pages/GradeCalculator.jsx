@@ -64,7 +64,7 @@ const GradeCalculator = () => {
                                 <input
                                     type="text"
                                     id={`category-${categoryIndex}`}
-                                    className="mt-1 text-sm block w-full rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
+                                    className="mt-1 text-sm block w-full rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
                                     value={category.name}
                                     onChange={(e) => handleCategoryChange(categoryIndex, "name", e.target.value)}
                                     placeholder="Enter Category"
@@ -74,7 +74,7 @@ const GradeCalculator = () => {
                                 <input
                                     type="number"
                                     id={`category-weight-${categoryIndex}`}
-                                    className="mt-1 pr-0 pl-3 w-1/4 rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
+                                    className="mt-1 pr-0 pl-3 w-1/4 rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
                                     value={category.weight}
                                     onChange={(e) => handleCategoryChange(categoryIndex, "weight", e.target.value)}
                                     placeholder=""
@@ -141,7 +141,7 @@ const GradeCalculator = () => {
                             <input
                                 type="number"
                                 id="classGrade"
-                                className="mt-1 ml-6 block w-1/6 rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
+                                className="mt-1 ml-6 block w-1/6 bg-nexus-blue-50 rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
                                 value={classGrade}
                                 onChange={(e) => setClassGrade(e.target.value)}
                                 required

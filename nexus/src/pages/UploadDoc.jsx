@@ -2,18 +2,28 @@ import React, { useState, useRef } from 'react';
 import { HiUpload, HiDocumentText } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
 import Select from 'react-select';
+import { useNavigate } from 'react-router-dom';
 
 const UploadDoc = () => {
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState('');
     const [documentName, setDocumentName] = useState('');
     const [location, setLocation] = useState(null);
+    const [unit, setUnit] = useState(null);
     const fileInputRef = useRef(null);
+    const navigate = useNavigate();
 
     const locationOptions = [
         { value: 'location1', label: 'Location 1' },
         { value: 'location2', label: 'Location 2' },
         { value: 'location3', label: 'Location 3' },
+    ];
+
+    const unitOptions = [
+        { value: 'unit1', label: 'Unit 1' },
+        { value: 'unit2', label: 'Unit 2' },
+        { value: 'unit3', label: 'Unit 3' },
+        { value: 'unit4', label: 'Unit 4' },
     ];
 
     const customStyles = {
@@ -70,28 +80,34 @@ const UploadDoc = () => {
             setMessage('Please select a location.');
             return;
         }
+        if (!unit) {
+            setMessage('Please select a unit.');
+            return;
+        }
 
-        // do something with backend or something idk
-        setMessage('Uploaded successfully');
-        // do something with backend or something idk
+        // Create a temporary URL for the file
+        const fileUrl = URL.createObjectURL(file);
 
-        // something like this maybe..
-        // const formData = new FormData();
-        // formData.append('file', file);
-        // formData.append('name', documentName);
-        // formData.append('location', location.value);
-        // await fetch('/api/upload', { method: 'POST', body: formData });
+        // Navigate to the DocPreview page with file information
+        navigate('/doc-preview', {
+            state: { 
+                fileName: file.name, 
+                fileUrl,
+                selectedUnit: unit.value,
+                documentName: documentName
+            } 
+        });
     };
 
     return (
         <motion.div 
-            className="min-h-screen inset-0 bg-gradient-to-br from-nexus-blue-800 via-nexus-blue-900 to-nexus-blue-700 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+            className="min-h-screen inset-0 bg-gradient-to-bl from-nexus-blue-700 via-nexus-blue-900 to-nexus-blue-600 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
             <motion.div 
-                className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-md"
+                className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-md bg-gradient-to-b from-nexus-blue-100 via-white to-nexus-blue-100"
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
@@ -179,6 +195,25 @@ const UploadDoc = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.6 }}
+                    >
+                        <label htmlFor="unit" className="block text-sm font-medium text-gray-700">
+                            Select Unit
+                        </label>
+                        <Select
+                            id="unit"
+                            options={unitOptions}
+                            value={unit}
+                            onChange={setUnit}
+                            placeholder="Select a unit"
+                            styles={customStyles}
+                            className="mt-1 block w-full"
+                        />
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.7 }}
                     >
                         <motion.button
                             type="submit"

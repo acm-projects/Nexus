@@ -7,3 +7,30 @@
     @apply bg-gradient-to-b from-nexus-blue-900 to-nexus-blue-800 text-white min-h-screen;
   }
 }
+
+/* Add these styles for the PDF viewer */
+.react-pdf__Page {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
+.react-pdf__Page__textContent {
+  pointer-events: none;
+}
+
+.react-pdf__Page__annotations.annotationLayer {
+  pointer-events: none;
+}
+
+.navbar-blur {
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Navbar content stays on top of the blur */
+.navbar-content {
+  position: relative;
+  z-index: 1;
+}
