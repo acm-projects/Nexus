@@ -19,6 +19,10 @@ export async function getUserCourses(userId) {
   }
 
   const result = await dynamodb.get(params).promise()
+
+  const courses = result.Item.courses;
+  console.log("Courses from DynamoDB:", courses); // Check if sectionCode exists in each course
+
   return result.Item.courses
 }
 
@@ -91,9 +95,12 @@ export async function onboardUser(userId, firstName, lastName, username, courses
 
     for (const course of courses) {
       const { courseCode, courseNumber, courseSection} = course
+      console.log("Course Section:", courseSection);
       
       const generalRoomName = generateRoomName(courseCode, courseNumber)
       const sectionRoomName = generateRoomName(courseCode, courseNumber, courseSection)
+      console.log(generateRoomName(courseCode, courseNumber, courseSection)); // Check if the room name includes the section code
+
 
       const generalRoom = await createOrGetChatRoom(generalRoomName)
       await addUserToChatRoom(generalRoom.roomId, userId)

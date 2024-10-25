@@ -21,12 +21,24 @@ router.get('/messages/:roomId', async (req, res) => {
 
 router.post('/messages', async (req, res) => {
   try {
-    const { roomId, userId, content } = req.body;
+    const { roomId, userId, message, type = 'text' } = req.body;
     
-    // Save the message to DynamoDB
-    await saveMessage(roomId, userId, content);
+    // Validate required fields
+    if (!roomId || !userId || !message) {
+      return res.status(400).json({ 
+        error: 'Missing required fields',
+        received: { roomId, userId, message }
+      });
+    }
 
-    res.status(200).json({ success: true, message: 'Message saved successfully' });
+    // Save the message to DynamoDB
+    await saveMessage(roomId, userId, message, type);
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Message saved successfully',
+      data: { roomId, userId, message, type }
+    });
   } catch (error) {
     console.error('Error saving message: ', error);
     res.status(500).json({ error: 'An error occurred while saving the message' });

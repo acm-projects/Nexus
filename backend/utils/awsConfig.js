@@ -12,20 +12,26 @@ const S3_BUCKET = 'nexus-course-documents'
 const ChatMessagesTable = 'ChatMessages'
 
 
-
 export async function saveMessage(roomId, userId, content, type = 'text') {
   const params = {
     TableName: ChatMessagesTable,
     Item: {
+      messageId: Date.now().toString(),
       roomId: roomId,
-      timestamp: Date.now(),
       userId: userId,
-      content: content,
+      message: content,
+      timestamp: Date.now(),
       type: type
     }
   };
 
-  await dynamodb.put(params).promise();
+  try {
+    await dynamodb.put(params).promise();
+    return true;
+  } catch (error) {
+    console.error('Error saving message:', error);
+    throw error;
+  }
 }
 
 export async function fetchMessages(roomId, limit = 50) {

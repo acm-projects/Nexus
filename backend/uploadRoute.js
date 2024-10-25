@@ -1,4 +1,4 @@
-import { uploadMiddleware } from "./middleware.js";
+import { uploadMiddleware } from "./middleware/uploadMiddleware.js";
 import express from 'express'
 
 export function configureRoutes(app) {
