@@ -7,8 +7,8 @@ import {combineWithSuperDoc} from './gemini.service.js';
 dotenv.config();
 
 const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_ID,
-    secretAccessKey: process.env.AWS_SECRET_KEY,
+    accessKeyId: process.env.S3_AWS_ACCESS_ID,
+    secretAccessKey: process.env.S3_AWS_SECRET_KEY,
 });
 
 

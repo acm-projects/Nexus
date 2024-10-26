@@ -1,5 +1,5 @@
 import express from 'express';
-import uploadRoutes from './routes/upload.route.js'; // Path to your router file
+import uploadRoutes from './api/fileUploadRoute.js'; // Path to your router file
 import cors from 'cors';
 const app = express();
 const port = process.env.PORT || 3000;

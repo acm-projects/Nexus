@@ -1,5 +1,5 @@
 //import fileUploadService from '../service/upload.service.js';
-import {uploadUnitToAWS,uploadFileToAWS,checkIfFileExists} from '../service/upload.service.js';
+import {uploadUnitToAWS,uploadFileToAWS,checkIfFileExists} from '../utils/service/upload.service.js';
 
 /**
  * upload file to AWS S3
