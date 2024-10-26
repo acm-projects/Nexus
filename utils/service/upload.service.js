@@ -64,7 +64,7 @@ export const uploadFileToAWS = async (file, unitid) => {
  * @returns {Object} Response with file URL and unit ID
  */
 export const uploadUnitToAWS = async (file) => {
-    const fileName = `${Date.now()}`;
+    const fileName = `${Date.now()}`; //
     const mimetype = file.mimetype;
 
     const params = {
@@ -74,7 +74,6 @@ export const uploadUnitToAWS = async (file) => {
         ContentType: mimetype,
         ACL: 'public-read'
     };
-
     const res = await s3.upload(params).promise();
 
     return { fileUrl: res.Location, unitid: fileName };
@@ -95,6 +94,7 @@ export const checkIfFileExists = async (bucketName, key) => {
     try {
         await s3.headObject(params).promise();
         console.log('File exists');
+
         return true;
     } catch (error) {
         if (error.code === 'NotFound') {

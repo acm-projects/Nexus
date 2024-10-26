@@ -12,6 +12,7 @@ import { configureSocket } from "./socket.js";
 //import { addCategory, addAssignment, calculateGrade, getCourses } from './api/gradeCalculator.js';
 import gradeCalculatorRoutes from './api/gradeCalculator.js'; 
 import getOnboardedCourses from './api/misc.js';
+import uploadRoutes from './api/fileUploadRoute.js'; 
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.use('/api/gradeCalculator', gradeCalculatorRoutes);
 //app.use('/api/gradeCalculator', calculateGrade);
 //app.use('/api/gradeCalculator', getCourses);
 app.use('/api/misc', getOnboardedCourses);
+app.use('/api/upload',uploadRoutes );
 
 const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {

@@ -1,6 +1,6 @@
 import express from "express";
-import { fetchMessages, dynamodb, s3, getChatRoom, saveMessage } from "../utils/awsConfig.js";
-import upload from "../utils/s3uploadHandler.js";
+import { fetchMessages, getChatRoom, saveMessage } from "../utils/awsConfig.js";
+import upload from "../utils/s3UploadHandler.js";
 import { getSectionChatRooms } from "../utils/onboardingHelpers.js";
 
 const router = express.Router()

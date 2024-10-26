@@ -1,5 +1,8 @@
 //import fileUploadService from '../service/upload.service.js';
 import {uploadUnitToAWS,uploadFileToAWS,checkIfFileExists} from '../utils/service/upload.service.js';
+import dotenv from 'dotenv'; 
+
+dotenv.config();
 
 /**
  * upload file to AWS S3
@@ -22,7 +25,7 @@ const uploadFileAwsCntrl = async (req, res, next) => {
         let uploadRes = '';
 
         // If the unitid is specified in the body, it sends the file to the file table, a unit file is uploaded to the table
-        if (!req.body) {
+        if (!req.body || !req.body.unitid) {
             uploadRes = await uploadUnitToAWS(file);
             return res.send(uploadRes);
         }
