@@ -91,7 +91,7 @@ export async function onboardUser(userId, firstName, lastName, username, courses
         createdAt: new Date().toISOString()
       }
     };
-    await dynamodb.put(onboardingParams).promise()
+    //await dynamodb.put(onboardingParams).promise()
 
     for (const course of courses) {
       const { courseCode, courseNumber, courseSection} = course

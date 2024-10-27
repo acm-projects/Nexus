@@ -1,7 +1,7 @@
 
 import express from 'express';
 import fileUpload from 'express-fileupload';
-import {uploadFileAwsCntrl} from '../controller/fileUploader.controller.js';
+import {downloadFileCntrl} from '../controller/fileDownloader.controller.js';
 
 const router = express.Router();
 
@@ -11,8 +11,7 @@ router.use(fileUpload({
 }));
 
 router
-    .route('/s3')
-    
-    .post(uploadFileAwsCntrl);
+    .route('/aws')
+    .post(downloadFileCntrl);
 
 export default router;

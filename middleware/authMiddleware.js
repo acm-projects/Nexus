@@ -103,6 +103,8 @@ export const generateTokens = async (userId) => {
             { expiresIn: '7d' }
         );
 
+       // console.log("Generated AccessToken: ",accessToken); 
+       // console.log("Generated refreshToken: ",refreshToken);
         return { accessToken, refreshToken };
     } catch (error) {
         console.error('Error generating tokens:', error);
@@ -179,7 +181,7 @@ export const refreshAccessToken = async (refreshToken) => {
       }
 
       // Generate new access token
-      return generateToken(decoded.userId);
+      return await generateToken(decoded.userId);
   } catch (error) {
       throw new Error('Invalid refresh token');
   }

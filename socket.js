@@ -76,7 +76,7 @@ export function configureSocket(io) {
     socket.on('disconnect', () => {
       if (roomId) {
         socket.leave(roomId);
-        console.log(`User ${username} disconnected from room ${roomId}`);
+        console.log(`User ${userId} disconnected from room ${roomId}`);
       }
     });
   });

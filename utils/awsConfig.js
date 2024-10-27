@@ -1,9 +1,14 @@
 import AWS from 'aws-sdk'
+import dotenv from 'dotenv'; 
+dotenv.config()
 
+
+console.log("AWSKey: ",process.env.S3_AWS_ACCESS_ID);
+console.log("AWSSecret: ", process.env.S3_AWS_SECRET_KEY);
 AWS.config.update({
-  region: 'us-east-2',
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  region: process.env.S3_AWS_REGION,
+  accessKeyId: process.env.S3_AWS_ACCESS_ID,
+  secretAccessKey: process.env.S3_AWS_SECRET_KEY
 })
 
 const dynamodb = new AWS.DynamoDB.DocumentClient()

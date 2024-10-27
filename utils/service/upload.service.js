@@ -1,8 +1,8 @@
 import AWS from 'aws-sdk';
-import { Storage } from '@google-cloud/storage';
 import dotenv from 'dotenv';
 
 import {combineWithSuperDoc} from './gemini.service.js';
+
 
 dotenv.config();
 
@@ -10,6 +10,13 @@ const s3 = new AWS.S3({
     accessKeyId: process.env.S3_AWS_ACCESS_ID,
     secretAccessKey: process.env.S3_AWS_SECRET_KEY,
 });
+
+const dynamodb = new AWS.DynamoDB.DocumentClient({
+    region: process.env.S3_AWS_REGION,
+    accessKeyId: process.env.S3_AWS_ACCESS_ID,
+    secretAccessKey: process.env.S3_AWS_SECRET_KEY,
+});
+
 
 
 
@@ -79,6 +86,35 @@ export const uploadUnitToAWS = async (file) => {
     return { fileUrl: res.Location, unitid: fileName };
 };
 
+export const uploadSectionToAWS = async(courseId) => {
+    try{
+        const params_check = {
+            TableName: 'SectionDB',
+            Key: {
+                sectionId: courseId
+            }
+          };
+        
+        const result = await dynamodb.get(params_check).promise();
+        if(result.Item){
+            console.log("Section Already Exists!"); 
+            return;
+        }
+    
+        const params = {
+            TableName: 'SectionDB',
+            Item: {
+              sectionId: courseId,
+              units: [
+              ]
+            }
+          }
+        await dynamodb.put(params).promise()
+        return;
+    } catch(error){
+        console.log(error);
+    }
+}
 /**
  * Checks if a file exists in the given S3 bucket.
  * @param {string} bucketName 
@@ -104,3 +140,4 @@ export const checkIfFileExists = async (bucketName, key) => {
         throw error;
     }
 };
+
