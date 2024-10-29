@@ -27,7 +27,7 @@ const downloadFileCntrl = async (req, res, next) => {
             return;
         }
         if(req.body.sectionId){ 
-            section_object = await getSection(req.body.sectionId);
+            const section_object = await getSection(req.body.sectionId);
             res.send({
                 statusCode: 200, 
                 object: section_object

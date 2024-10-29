@@ -19,7 +19,7 @@ export const generatePresignedUrl = async (unitid) => {
     const params = {
       Bucket: 'fileuploadbucket-nexus',
       Key: unitid,
-      Expires: 300 // URL valid for 5 minutes
+      Expires: 3600 // URL valid for 1 hour (300 for 5 minutes)
     };
   
     try {

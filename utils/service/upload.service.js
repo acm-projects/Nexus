@@ -86,7 +86,7 @@ export const uploadUnitToAWS = async (file) => {
     return { fileUrl: res.Location, unitid: fileName };
 };
 
-export const uploadSectionToAWS = async(courseId) => {
+export const uploadSectionToAWS = async(courseId,units) => {
     try{
         const params_check = {
             TableName: 'SectionDB',
@@ -96,17 +96,12 @@ export const uploadSectionToAWS = async(courseId) => {
           };
         
         const result = await dynamodb.get(params_check).promise();
-        if(result.Item){
-            console.log("Section Already Exists!"); 
-            return;
-        }
     
         const params = {
             TableName: 'SectionDB',
             Item: {
               sectionId: courseId,
-              units: [
-              ]
+              units: units ? units : []
             }
           }
         await dynamodb.put(params).promise()

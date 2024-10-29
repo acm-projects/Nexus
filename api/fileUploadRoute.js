@@ -11,7 +11,7 @@ router.use(fileUpload({
 }));
 
 router
-    .route('/s3')
+    .route('/aws')
     
     .post(uploadFileAwsCntrl);
 
