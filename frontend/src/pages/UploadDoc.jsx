@@ -19,6 +19,7 @@ const UploadDoc = () => {
     const [unitOptions, setUnitOptions] = useState([]);
     const [locationOptions, setLocationOptions] = useState([]);
 
+
     const customStyles = {
         control: (provided) => ({
             ...provided,
@@ -232,7 +233,7 @@ const UploadDoc = () => {
         try {
             // Post new unit data
             await axios.post('http://localhost:3000/api/upload/aws', {
-                sectionId: selectedCourse,
+                sectionId: location.value,
                 units: mappedBackUnits,
             });
             setMessage(`Unit "${unitid}" added successfully.`);
