@@ -8,7 +8,7 @@ import Message from "../components/Message.jsx";
 const SectionChat = () => {
     const { courseNumber } = useParams();
     const [message, setMessage] = useState('');
-    const [selectedCourse, setSelectedCourse] = useState(courseNumber ? parseInt(courseNumber) : 1); // Use courseNumber from URL
+    const [selectedCourse, setSelectedCourse] = useState(courseNumber ? parseInt(courseNumber) : 1); 
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const courses = [1, 2, 3, 4, 5, 6];
     const samples = [
@@ -17,11 +17,10 @@ const SectionChat = () => {
     ];
 
     const handleCourseChange = (course) => {
-        setSelectedCourse(course); // Update selected course
+        setSelectedCourse(course);
     };
 
     useEffect(() => {
-        // Update selectedCourse if courseNumber changes (e.g., navigating back)
         if (courseNumber) {
             setSelectedCourse(parseInt(courseNumber));
         }
@@ -38,7 +37,7 @@ const SectionChat = () => {
                     onToggle={setIsSidebarCollapsed}
                 />
                 <div className={`flex-1 bg-gradient-to-br from-nexus-blue-800 via-nexus-blue-900 to-nexus-blue-700 transition-all duration-300 ${isSidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
-                    <div className="pt-4 flex flex-col justify-center items-center h-full">
+                    <div className="pt-4 flex flex-col justify-start items-center h-full">
                         <motion.h1
                             className="pb-10 text-white text-xl"
                             initial={{ opacity: 0, y: 20 }}
@@ -47,7 +46,7 @@ const SectionChat = () => {
                         >
                             Welcome to Section Chat! Chat with people in your class and section.
                         </motion.h1>
-                        <div className="container w-3/4 mx-auto">
+                        <div className="container w-1/2 mx-auto">
                             {samples.map((message, index) => (
                                 <Message key={index} message={message} />
                             ))}
@@ -58,7 +57,7 @@ const SectionChat = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.5 }}
                         >
-                            <div className="relative w-3/4">
+                            <div className="relative w-1/2">
                                 <input
                                     type="text"
                                     id="message"
