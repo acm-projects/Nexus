@@ -32,6 +32,11 @@ const SectionSideBar = ({ courses, selectedCourse, onCourseChange, onToggle }) =
     collapsed: { width: 64 },
   };
 
+  const handleCourseChange = (course) => {
+    onCourseChange(course);
+    navigate(`/section-chat/${course}`);
+  }
+
   return (
     <motion.aside 
       className="bg-gradient-to-br from-nexus-blue-800 via-nexus-blue-900 to-nexus-blue-700 shadow-md flex flex-col h-screen fixed left-0 top-0 pt-16 overflow-visible z-40"
@@ -65,7 +70,7 @@ const SectionSideBar = ({ courses, selectedCourse, onCourseChange, onToggle }) =
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                 >
                   <button 
-                    onClick={() => onCourseChange(course)}
+                    onClick={() => handleCourseChange(course)}
                     className={`flex items-center w-full p-2 rounded hover:bg-nexus-blue-700 text-nexus-blue-200 hover:text-white transition-colors duration-200 ${selectedCourse === course ? 'bg-nexus-blue-700 text-white' : ''}`}
                   >
                     <HiAcademicCap className="mr-2" />

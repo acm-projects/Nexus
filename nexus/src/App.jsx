@@ -34,7 +34,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/upload" element={<UploadDoc />} />
-          <Route path="/section-chat" element={<SectionChat />} />
+          <Route path="/section-chat/:courseNumber" element={<SectionChat />} />
           <Route path="/doc-preview" element={<DocPreview />} />
         </Routes>
       </div>

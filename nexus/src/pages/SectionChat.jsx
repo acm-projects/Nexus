@@ -1,28 +1,37 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useParams } from "react-router-dom";
 import { IoMdSend } from "react-icons/io";
 import SectionSideBar from '../components/SectionSideBar.jsx';
 import Message from "../components/Message.jsx";
 
 const SectionChat = () => {
+    const { courseNumber } = useParams();
     const [message, setMessage] = useState('');
-    const [selectedCourse, setSelectedCourse] = useState(1);
+    const [selectedCourse, setSelectedCourse] = useState(courseNumber ? parseInt(courseNumber) : 1); // Use courseNumber from URL
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const courses = [1, 2, 3, 4, 5, 6];
     const samples = [
-        {sender: 'user', text: 'Hi'},
-        {sender: 'other', text: 'hola'}
+        { sender: 'user', text: 'Hi' },
+        { sender: 'other', text: 'hola' }
     ];
 
-    const handleCourseChange = (courseNumber) => {
-        setSelectedCourse(courseNumber);
+    const handleCourseChange = (course) => {
+        setSelectedCourse(course); // Update selected course
     };
 
-    return(
+    useEffect(() => {
+        // Update selectedCourse if courseNumber changes (e.g., navigating back)
+        if (courseNumber) {
+            setSelectedCourse(parseInt(courseNumber));
+        }
+    }, [courseNumber]);
+
+    return (
         <div className="relative">
             <div className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-br from-nexus-blue-800 via-nexus-blue-900 to-nexus-blue-700 z-40"></div>
             <div className="flex min-h-screen pt-16">
-                <SectionSideBar 
+                <SectionSideBar
                     courses={courses}
                     selectedCourse={selectedCourse}
                     onCourseChange={handleCourseChange}
@@ -38,7 +47,7 @@ const SectionChat = () => {
                         >
                             Welcome to Section Chat! Chat with people in your class and section.
                         </motion.h1>
-                        <div className = "container w-3/4 mx-auto">
+                        <div className="container w-3/4 mx-auto">
                             {samples.map((message, index) => (
                                 <Message key={index} message={message} />
                             ))}
@@ -60,7 +69,7 @@ const SectionChat = () => {
                                 />
                                 <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent">
                                     <IoMdSend className="text-nexus-blue-900 hover:text-nexus-blue-200 cursor-pointer" />
-                                 </button>
+                                </button>
                             </div>
                         </motion.div>
                     </div>

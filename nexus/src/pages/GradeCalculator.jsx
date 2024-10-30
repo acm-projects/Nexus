@@ -35,12 +35,14 @@ const GradeCalculator = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-nexus-blue-800 via-nexus-blue-900 to-nexus-blue-700 h-dvh w-screen">
             <div className="flex flex-col justify-center items-center">
                 <motion.h1
-                    className="mt-4 pt-20 pb-10 font-bold"
+                    className="mt-4 pt-20 pb-10 font-bold text-center"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
                 >
                     Enter the name and weight of each category, as well as the desired final grade in the class.
+                    <br />
+                    Press "Save" to save your inputs to a class.
                 </motion.h1>
                 <motion.h1 
                     className="p-5 pr-6 pl-7 rounded-md text-xl text-white text-center"
@@ -158,6 +160,19 @@ const GradeCalculator = () => {
                 </motion.div>
 
             </div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.5 }}
+                className = "fixed bottom-6 right-8"
+            >
+                <button 
+                className = "px-6 py-2 bg-nexus-blue-300 text-white font-bold rounded-md transition duration-300 hover:text-nexus-blue-900 transform hover:bg-nexus-blue-100"
+                >
+                Save
+                </button>
+            </motion.div>
         </div>
     );
 };
