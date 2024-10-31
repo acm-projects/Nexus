@@ -131,33 +131,28 @@ const GradeCalculator = () => {
                 </motion.div>
 
                 <motion.div 
-                    className="mb-4 flex flex-row justify-between items-center gap-4"
+                    className="mb-4 flex flex-col justify-center items-center gap-4"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 1.5 }}
                 >
-                    <div className="flex flex-col justify-start items-start gap-2">
-                        <h1 className="pt-3 text-xl text-nexus-blue-200"><strong>Remaining Assignment Weight:</strong> 15</h1>
-                        <div className="flex flex-row items-center">
-                            <h1 className="pt-3 text-xl text-nexus-blue-200"><strong>Desired Class Grade:</strong></h1>
-                            <input
-                                type="number"
-                                id="classGrade"
-                                className="mt-1 ml-6 block w-1/6 bg-nexus-blue-50 rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
-                                value={classGrade}
-                                onChange={(e) => setClassGrade(e.target.value)}
-                                required
-                            />
-                        </div>
+                    <div className="flex flex-row justify-center items-center gap-8">
+                        <h1 className="text-xl text-nexus-blue-200"><strong>Current Grade: </strong> 95</h1>
+                        <h1 className="text-xl text-nexus-blue-200"><strong>Remaining Assignment Weight:</strong> 15</h1>
                     </div>
-                    <button
-                        type="button"
-                        onClick={addCategory}
-                        className="mt-6 p-2 bg-nexus-blue-300 text-white font-bold rounded-md transition duration-300 hover:text-nexus-blue-900 transform hover:bg-nexus-blue-100"
-                    >
-                    Add Category
-                    </button>
+                    <div className="flex flex-col items-center">
+                        <h1 className="text-3xl text-nexus-blue-200"><strong>Desired Class Grade:</strong></h1>
+                        <input
+                            type="number"
+                            id="classGrade"
+                            className="mt-1 block w-1/6 bg-nexus-blue-50 rounded-md border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
+                            value={classGrade}
+                            onChange={(e) => setClassGrade(e.target.value)}
+                            required
+                        />
+                    </div>
                 </motion.div>
+
 
             </div>
 
@@ -167,6 +162,13 @@ const GradeCalculator = () => {
                 transition={{ duration: 0.5, delay: 1.5 }}
                 className = "fixed bottom-6 right-8"
             >
+                <button
+                        type="button"
+                        onClick={addCategory}
+                        className="mt-6 mr-4 p-2 bg-nexus-blue-300 text-white font-bold rounded-md transition duration-300 hover:text-nexus-blue-900 transform hover:bg-nexus-blue-100"
+                    >
+                    Add Category
+                </button>
                 <button 
                 className = "px-6 py-2 bg-nexus-blue-300 text-white font-bold rounded-md transition duration-300 hover:text-nexus-blue-900 transform hover:bg-nexus-blue-100"
                 >
