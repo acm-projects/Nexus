@@ -76,15 +76,29 @@ const RegisterPage = () => {
           userCourses: formattedCourses
         });
 
-        if (response.status === 201) {
+        console.log('Registration response:', response.data);
+
+        /*if (response.status === 201) {
           const { token } = response.data;
           localStorage.setItem('token', token); 
+          console.log(localStorage.getItem('token'))
+          console.log('Token saved in localStorage:', localStorage.getItem('token'));
           navigate('/'); 
-        }
+        }*/
+
+          if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            console.log('Token saved:', response.data.token);
+            navigate('/');
+          } else {
+            console.error('No token received in response');
+          }
+  
       } catch (error) {
         console.error('Registration failed:', error.response?.data?.message || error.message);
         console.error('Error occurred during registration:', error);
       }
+
       console.log('Registration submitted', {
         email,
         password,

@@ -23,6 +23,7 @@ const LoginPage = () => {
 
       if (response.data.token) {
         setToken(response.data.token)
+        localStorage.setItem('token', response.data.token)
         setMessage('Login successful')
         console.log('Login successul, redirecting...')
         navigate('/')
