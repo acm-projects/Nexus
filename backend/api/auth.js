@@ -83,11 +83,15 @@ router.post('/register', async (req, res) => {
   const { accessToken, refreshToken } = generateTokens(userId);
   
   if (result.success) {
+    const { accessToken, refreshToken } = await generateTokens(userId);
     
-    // Send both tokens
     res.status(201)
       .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'Strict' })
-      .json({ message: 'User created successfully', token: accessToken });
+      .json({ 
+        message: 'User created successfully', 
+        token: accessToken, // Make sure this is included!
+        success: true 
+      });
   } else {
     // If onboarding fails, delete the user from both UserDB and OnboardingDB
     const deleteUserParams = {

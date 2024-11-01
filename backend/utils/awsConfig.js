@@ -12,7 +12,7 @@ const S3_BUCKET = 'nexus-course-documents'
 const ChatMessagesTable = 'ChatMessages'
 
 
-export async function saveMessage(roomId, userId, content, type = 'text') {
+/*export async function saveMessage(roomId, userId, content, type = 'text') {
   const params = {
     TableName: ChatMessagesTable,
     Item: {
@@ -32,7 +32,30 @@ export async function saveMessage(roomId, userId, content, type = 'text') {
     console.error('Error saving message:', error);
     throw error;
   }
-}
+}*/
+
+export const saveMessage = async (roomId, userId, message, type = 'text', username) => {
+  const params = {
+    TableName: ChatMessagesTable,
+    Item: {
+      messageId: `${Date.now()}-${userId}`,
+      roomId,
+      userId,
+      username, 
+      message,
+      type,
+      timestamp: Date.now()
+    }
+  };
+
+  try {
+    await dynamodb.put(params).promise();
+    return params.Item;
+  } catch (error) {
+    console.error('Error saving message:', error);
+    throw error;
+  }
+};
 
 export async function fetchMessages(roomId, limit = 50) {
   const params = {
