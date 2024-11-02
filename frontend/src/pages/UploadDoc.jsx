@@ -19,7 +19,6 @@ const UploadDoc = () => {
     const [unitOptions, setUnitOptions] = useState([]);
     const [locationOptions, setLocationOptions] = useState([]);
 
-
     const customStyles = {
         control: (provided) => ({
             ...provided,

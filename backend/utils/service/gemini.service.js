@@ -7,6 +7,7 @@ import showdown from 'showdown';
 import { convert } from 'html-to-text';
 import { downloadFileFromS3 } from './download.service.js';
 import pdf from 'pdf-parse';
+import fs from 'fs';
 
 dotenv.config();
 
@@ -22,6 +23,15 @@ const bufferToGenerativePart = (buffer, mimeType) => ({
 
 
 async function createPDF(textContent) {
+    await fs.readFile('path/to/your/file.txt', 'utf8', (err, data) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        //console.log(data);
+        textContent = data;
+      });
+      
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([600, 800]); // Size of the page
     const { width, height } = page.getSize();
