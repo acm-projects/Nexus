@@ -64,10 +64,6 @@ const Navbar = () => {
               <HiCalculator className="mr-1" /> Grade Calculator
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-current transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
             </Link>
-            <Link to="/chat" className={linkClasses}>
-              <HiChat className="mr-1" /> Chat
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-current transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
-            </Link>
             <Link to="/login" className={loginButtonClasses}>
               <HiUserCircle className="mr-1" /> Login
             </Link>

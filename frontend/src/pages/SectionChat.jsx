@@ -107,32 +107,34 @@ const SectionChat = ({ userId }) => {
             }
         };
     }, [roomId, courseInfo]);
-    
+
     const fetchMessages = async (token, roomId) => {
         try {
             const response = await axios.get(
                 `http://localhost:3000/api/chat/messages/${roomId}`,
                 { headers: { 'Authorization': `Bearer ${token}` } }
             );
-   
-            const formattedMessages = Array.isArray(response.data.Items) ?
-                response.data.Items.map(item => ({
+       
+            // Direct access to response.data since it's already the messages array
+            const formattedMessages = Array.isArray(response.data) ?
+                response.data.map(item => ({
                     messageId: item.messageId,
                     userId: item.userId,
                     message: item.message,
                     timestamp: item.timestamp,
                     roomId: item.roomId,
                     username: item.username 
-                })).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)) : [];
-   
+                })).sort((a, b) => a.timestamp - b.timestamp) : [];
+       
             setMessages(formattedMessages);
+            console.log('Fetched messages:', formattedMessages); // Debug log
         } catch (error) {
-            console.error('Error fetching messages:', error);
+            console.error('Error fetching messages:', error.response || error);
             setMessages([]);
         } finally {
             setLoading(false);
         }
-    };
+    };    
 
     const sendMessage = async (e) => {
         e.preventDefault();
@@ -215,7 +217,7 @@ const SectionChat = ({ userId }) => {
                             <div ref={messagesEndRef} />
                         </div>
                         <motion.div
-                            className="fixed bottom-0 left-0 w-full flex justify-center pb-6"
+                            className="fixed bottom-0 w-full flex justify-center pb-6"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.5 }}

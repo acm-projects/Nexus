@@ -19,12 +19,12 @@ const Message = ({ message }) => {
                 <span className={`text-xs text-white/70 mb-1 ${isUser ? 'text-right' : 'text-left'}`}>
                     {message.username}
                 </span>
-                <div className={`p-4 rounded-lg max-w-md ${
+                <div className={` px-2   rounded-lg max-w-md ${
                     isUser 
                         ? 'bg-nexus-blue-200 bg-opacity-40 border-2 border-white/20 text-white' 
                         : 'bg-white/10 backdrop-blur-sm border-2 border-white/20 ml-0'
                 }`}>
-                    <div className={`text-xs text-white/50 mt-1 ${isUser ? 'text-right' : 'text-left'}`}>
+                    <div className={`text-xs text-white/50 mt-1 mb-1  ${isUser ? 'text-right' : 'text-left'}`}>
                         {formatTime(message.timestamp)}
                     </div>
                     <div className="break-words">{message.text}</div>

@@ -12,14 +12,21 @@ const SectionSideBar = ({ selectedCourse, onToggle }) => {
   useEffect(() => {
     const fetchCourses = async () => {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        console.error('No token found in localStorage');
+        navigate('/login');
+        return;
+      }
 
       try {
+        console.log('Fetching courses with token:', token);
         const response = await axios.get('http://localhost:3000/api/misc/getOnboardedCourses', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         });
+        
+        console.log('API Response:', response.data);
         setCourses(response.data.courses);
       } catch (error) {
         console.error('Error fetching courses:', error.response?.data?.message || error.message);
@@ -27,15 +34,29 @@ const SectionSideBar = ({ selectedCourse, onToggle }) => {
     };
 
     fetchCourses();
-  }, []);
+  }, [navigate]);
 
   const handleSectionChatClick = (course) => {
-    const roomId = `${course.courseCode}${course.courseNumber}.${course.section}`;
+    // Add validation and logging with the correct property names
+    if (!course.courseCode || !course.courseNumber || !course.courseSection) {
+      console.error('Missing course information:', course);
+      return;
+    }
+
+    const roomId = `${course.courseCode}${course.courseNumber}.${course.courseSection}`;
+    console.log('Generated roomId:', roomId);
+    
+    // Validate roomId format
+    if (!roomId.match(/[A-Z]+\d+\.\d+/)) {
+      console.error('Invalid roomId format:', roomId);
+      return;
+    }
+
     navigate(`/section-chat/${roomId}`, {
       state: {
         courseName: `${course.courseCode} ${course.courseNumber}`,
-        section: course.section,
-        courseId: course._id
+        section: course.courseSection,
+        courseId: course.courseId
       }
     });
   };
@@ -92,7 +113,7 @@ const SectionSideBar = ({ selectedCourse, onToggle }) => {
             <ul className="space-y-2">
               {courses.map((course, index) => (
                 <motion.li 
-                  key={course._id}
+                  key={course.courseId}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -106,7 +127,7 @@ const SectionSideBar = ({ selectedCourse, onToggle }) => {
                     <HiAcademicCap className="mr-2" />
                     <div className="text-left">
                       <div className="font-medium">{`${course.courseCode} ${course.courseNumber}`}</div>
-                      <div className="text-sm opacity-75">Section {course.section}</div>
+                      <div className="text-sm opacity-75">Section {course.courseSection}</div>
                     </div>
                   </button>
                 </motion.li>
