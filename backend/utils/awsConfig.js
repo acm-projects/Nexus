@@ -1,14 +1,9 @@
 import AWS from 'aws-sdk'
-import dotenv from 'dotenv'; 
-dotenv.config()
 
-
-console.log("AWSKey: ",process.env.S3_AWS_ACCESS_ID);
-console.log("AWSSecret: ", process.env.S3_AWS_SECRET_KEY);
 AWS.config.update({
-  region: process.env.S3_AWS_REGION,
-  accessKeyId: process.env.S3_AWS_ACCESS_ID,
-  secretAccessKey: process.env.S3_AWS_SECRET_KEY
+  region: 'us-east-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 })
 
 const dynamodb = new AWS.DynamoDB.DocumentClient()
@@ -17,7 +12,7 @@ const S3_BUCKET = 'nexus-course-documents'
 const ChatMessagesTable = 'ChatMessages'
 
 
-export async function saveMessage(roomId, userId, content, type = 'text') {
+/*export async function saveMessage(roomId, userId, content, type = 'text') {
   const params = {
     TableName: ChatMessagesTable,
     Item: {
@@ -37,21 +32,54 @@ export async function saveMessage(roomId, userId, content, type = 'text') {
     console.error('Error saving message:', error);
     throw error;
   }
-}
+}*/
+
+export const saveMessage = async (roomId, userId, message, type = 'text', username) => {
+  const params = {
+    TableName: ChatMessagesTable,
+    Item: {
+      messageId: `${Date.now()}-${userId}`,
+      roomId,
+      userId,
+      username, 
+      message,
+      type,
+      timestamp: Date.now()
+    }
+  };
+
+  try {
+    await dynamodb.put(params).promise();
+    return params.Item;
+  } catch (error) {
+    console.error('Error saving message:', error);
+    throw error;
+  }
+};
 
 export async function fetchMessages(roomId, limit = 50) {
   const params = {
-    TableName: ChatMessagesTable,
-    KeyConditionExpression: 'roomId = :roomId',
-    ExpressionAttributeValues: {
-      ':roomId': roomId
-    },
-    ScanIndexForward: false, 
-    Limit: limit
-  }
+      TableName: ChatMessagesTable,
+      KeyConditionExpression: 'roomId = :roomId',
+      ExpressionAttributeValues: {
+          ':roomId': roomId
+      },
+      ScanIndexForward: false,
+      Limit: limit
+  };
 
-  const result = await dynamodb.query(params).promise()
-  return result.Items.reverse() // reverse to get the oldest messages first
+  try {
+      const result = await dynamodb.query(params).promise();
+      // Add error checking for empty results
+      if (!result.Items) {
+          console.log('No messages found for room:', roomId);
+          return [];
+      }
+      return result.Items.reverse(); // reverse to get oldest messages first
+  } catch (error) {
+      console.error('Error in fetchMessages:', error);
+      throw error; 
+  }
 }
 
 export async function getChatRoom(roomId) {
