@@ -6,7 +6,7 @@ import { uploadSectionToAWS } from '../utils/service/upload.service.js';
 import { Router } from "express";
 import { v4 as uuidv4 } from 'uuid'
 import { onboardUser } from '../utils/onboardingHelpers.js';
-import { generateRefreshToken, generateTokens } from "../middleware/authMiddleware.js";
+import { generateTokens } from "../middleware/authMiddleware.js";
 
 const router = Router()
 
@@ -73,6 +73,8 @@ router.post('/register', async (req, res) => {
         }
 
 
+        
+
         return {
           courseCode,
           courseNumber,
@@ -80,27 +82,10 @@ router.post('/register', async (req, res) => {
           profName: profName || null,
           courseId,
         }
+        
       })
     );
 
-    /*
-    const courses = userCourses.map(course => {
-      const { courseCode, courseNumber, courseSection, profName } = course;
-      
-      const courseId = profName 
-        ? `${courseCode}-${courseNumber}-${profName}-${courseSection}` 
-        : `${courseCode}-${courseNumber}-${courseSection}`;
-  
-      
-      return {
-        courseCode,
-        courseNumber,
-        courseSection,
-        profName: profName || null,  
-        courseId,  
-      }
-    })
-    */
 
 
     const onboardingParams = {
@@ -119,16 +104,19 @@ router.post('/register', async (req, res) => {
 
     const result = await onboardUser(userId, firstName, lastName, username, courses)
 
-    const { accessToken, refreshToken } = await generateTokens(userId);
+   // const { accessToken, refreshToken } = await generateTokens(userId);
     // console.log("Access Token: ", accessToken); 
     // console.log("Refresh Token: ",refreshToken);
 
     if (result.success) {
-
-      // Send both tokens
+      const { accessToken, refreshToken } = await generateTokens(userId);
       res.status(201)
         .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'Strict' })
-        .json({ message: 'User created successfully', token: accessToken });
+        .json({
+          message: 'User created successfully',
+          token: accessToken, // Make sure this is included!
+          success: true
+        });
     } else {
       // If onboarding fails, delete the user from both UserDB and OnboardingDB
       const deleteUserParams = {
@@ -145,6 +133,18 @@ router.post('/register', async (req, res) => {
       ]);
       return res.status(500).json({ message: result.message, error: result.error });
     }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 
   }

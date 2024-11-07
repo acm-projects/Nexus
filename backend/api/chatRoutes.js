@@ -1,23 +1,29 @@
 import express from "express";
-import { fetchMessages, getChatRoom, saveMessage } from "../utils/awsConfig.js";
-import upload from "../utils/s3UploadHandler.js";
+import { fetchMessages, dynamodb, s3, getChatRoom, saveMessage } from "../utils/awsConfig.js";
+//import upload from "../utils/s3uploadHandler.js";
 import { getSectionChatRooms } from "../utils/onboardingHelpers.js";
 
 const router = express.Router()
 
 router.get('/messages/:roomId', async (req, res) => {
   try {
-    const { roomId } = req.params
-    const { limit } = req.query
-    const messages = await fetchMessages(roomId, limit ? parseInt(limit) : 50)
+      const { roomId } = req.params;
+      const { limit } = req.query;
+      
+      if (!roomId) {
+          return res.status(400).json({ error: 'Room ID is required' });
+      }
 
-    res.json(messages)
+      const messages = await fetchMessages(roomId, limit ? parseInt(limit) : 50);
+      console.log(`Fetched ${messages.length} messages for room ${roomId}`); // Debug log
+      
+      res.json(messages); // Return messages array directly
   }
   catch (error) {
-    console.error('Error fetching messages: ', error)
-    res.status(500).json({error: 'An error occurred while fetching messages'})
+      console.error('Error fetching messages: ', error);
+      res.status(500).json({error: 'An error occurred while fetching messages'});
   }
-})
+});
 
 router.post('/messages', async (req, res) => {
   try {
@@ -57,7 +63,7 @@ router.get('/chatroom/:roomId', async (req, res) => {
   }
 });
 
-
+/*
 router.post('/upload', upload.single('image'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
@@ -74,6 +80,7 @@ router.post('/upload', upload.single('image'), async (req, res) => {
     res.status(500).json({ error: 'An error occurred while saving the message' });
   }
 });
+*/
 
 router.get('/sectionChatRooms/:userId', getSectionChatRooms);
 

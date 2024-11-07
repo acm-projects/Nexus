@@ -26,6 +26,52 @@ export async function getUserCourses(userId) {
   return result.Item.courses
 }
 
+/*export async function getUserData(userId) {
+  try {
+    const params = {
+      TableName: 'UserDB',
+      Key: { userId: userId }
+    };
+
+    console.log('Fetching user data for userId:', userId);
+    
+    const result = await dynamodb.get(params).promise();
+    
+    if (!result || !result.Item) {
+      console.log('No user found for userId:', userId);
+      return null;
+    }
+    
+    console.log('Found user data:', result.Item);
+    return result.Item;  // Return the Item directly
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    throw error;
+  }
+}
+
+export async function getUserCourses(userId) {
+  try {
+    const params = {
+      TableName: 'OnboardingDB',
+      Key: { userId: userId }
+    };
+
+    const result = await dynamodb.get(params).promise();
+
+    if (!result || !result.Item || !result.Item.courses) {
+      console.log('No courses found for userId:', userId);
+      return [];
+    }
+
+    console.log("Courses from DynamoDB:", result.Item.courses);
+    return result.Item.courses;
+  } catch (error) {
+    console.error('Error fetching user courses:', error);
+    throw error;
+  }
+}*/
+
 export function generateRoomName(courseCode, courseNumber, sectionCode) {
   const base = `${courseCode} ${courseNumber}`
   return sectionCode ? `${base}.${sectionCode}` : base
@@ -91,7 +137,7 @@ export async function onboardUser(userId, firstName, lastName, username, courses
         createdAt: new Date().toISOString()
       }
     };
-    //await dynamodb.put(onboardingParams).promise()
+    await dynamodb.put(onboardingParams).promise()
 
     for (const course of courses) {
       const { courseCode, courseNumber, courseSection} = course
