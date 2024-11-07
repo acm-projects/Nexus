@@ -59,17 +59,27 @@ export const saveMessage = async (roomId, userId, message, type = 'text', userna
 
 export async function fetchMessages(roomId, limit = 50) {
   const params = {
-    TableName: ChatMessagesTable,
-    KeyConditionExpression: 'roomId = :roomId',
-    ExpressionAttributeValues: {
-      ':roomId': roomId
-    },
-    ScanIndexForward: false, 
-    Limit: limit
-  }
+      TableName: ChatMessagesTable,
+      KeyConditionExpression: 'roomId = :roomId',
+      ExpressionAttributeValues: {
+          ':roomId': roomId
+      },
+      ScanIndexForward: false,
+      Limit: limit
+  };
 
-  const result = await dynamodb.query(params).promise()
-  return result.Items.reverse() // reverse to get the oldest messages first
+  try {
+      const result = await dynamodb.query(params).promise();
+      // Add error checking for empty results
+      if (!result.Items) {
+          console.log('No messages found for room:', roomId);
+          return [];
+      }
+      return result.Items.reverse(); // reverse to get oldest messages first
+  } catch (error) {
+      console.error('Error in fetchMessages:', error);
+      throw error; 
+  }
 }
 
 export async function getChatRoom(roomId) {
