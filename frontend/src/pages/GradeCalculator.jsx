@@ -13,6 +13,7 @@ const GradeCalculator = () => {
     const [courseId, setCourseId] = useState('');
     const [courses, setCourses] = useState([]);
     const [categoryGrades, setCategoryGrades] = useState([]);
+    const [requiredGrade, setRequiredGrade] = useState(null);
 
     // Fetch user's courses on component mount
     useEffect(() => {
