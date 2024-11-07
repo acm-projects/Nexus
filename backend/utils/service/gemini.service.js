@@ -9,6 +9,13 @@ import { downloadFileFromS3 } from './download.service.js';
 import pdf from 'pdf-parse';
 import fs from 'fs';
 
+import markdownit from "markdown-it"; 
+//import htmlToPdfMake from 'html-to-pdfmake';
+import puppeteer from 'puppeteer';
+
+import pdfMake from 'pdfmake';
+
+
 dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -21,6 +28,26 @@ const bufferToGenerativePart = (buffer, mimeType) => ({
     },
 });
 
+async function createMarkDownPDF(textContent){
+    const md = markdownit(); 
+    const htmlContent = md.render(textContent); 
+    // Launch puppeteer and generate PDF
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    // Set the HTML content in puppeteer
+    await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
+
+    // Generate PDF
+    const pdfBuffer = await page.pdf({
+        format: 'A4',
+        margin: { top: '20px', right: '20px', bottom: '20px', left: '20px' }
+    });
+
+    await browser.close();
+
+    return pdfBuffer; // Return 
+}
 
 async function createPDF(textContent) {
     await fs.readFile('path/to/your/file.txt', 'utf8', (err, data) => {
@@ -31,7 +58,6 @@ async function createPDF(textContent) {
         //console.log(data);
         textContent = data;
       });
-      
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([600, 800]); // Size of the page
     const { width, height } = page.getSize();
@@ -113,7 +139,6 @@ async function generatePDF(generatedText) {
             ignoreHref: true,
             ignoreImage: true
         };
-
         const textContent = convert(htmlContent, options);
 
         // Generate PDF
@@ -146,14 +171,14 @@ export const combineWithSuperDoc = async (file, unitid) => {
 
         // Choose a Gemini model
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const prompt = "Incorporate both of these documents together and avoid redundancy.";
+        const prompt = "Incorporate both of these documents together, avoid redundancy, and format the notes.";
 
         const generatedContent = await model.generateContent([prompt, ...imageParts]);
 
        /* const params = await generatePDF(generatedContent.response.text());
         return params;
         */ 
-       const resultPDFBytes = await createPDF(generatedContent.response.text());
+       const resultPDFBytes = await createMarkDownPDF(generatedContent.response.text());
        return resultPDFBytes
     } catch (error) {
         throw error;
