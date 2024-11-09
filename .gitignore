@@ -1,0 +1,9 @@
+*.DS_Store
+*.log
+/tmp
+*.code-workspace
+/.vscode
+/src
+Pipfile*
+*.side
+/__pycache__
