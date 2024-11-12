@@ -1,36 +1,5 @@
 #!/usr/bin/env python3
-"""
-Copyright (C) 2020  Taylor Smith
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see https://www.gnu.org/licenses/
-
-
- ~^~
-Blackboard Duster
-    Scrapes course materials from your Blackboard courses, such as
-    lecture notes and homework
-Author: Taylor Smith, Winter 2019
-Python Version: 3.7
-Notes: Uses Selenium to scrape urls from Blackboard, then urllib to
-    download files
-TODO:
-    - avoid redundant visit to course home page (just ignore it?)
-    - dump notes from items/assignments into a .txt : use div.details
-    - don't abort if navpane is missing, reload or skip
-    - put a 'download progress' label on progress bar
-    - use etag instead of last-modified date (note - etag may not always be available)
-~*~ """
 
 import argparse
 import json
@@ -48,11 +17,12 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from urllib.parse import unquote
+
 from selenium.webdriver.chrome.options import Options
 
 from flask import Flask, request, jsonify
-import threading
+from flask_cors import CORS
+
 
 
 # Last Modified value in the header has a timezone. Once it is
@@ -221,7 +191,7 @@ def setup_session(driver):
     return session
 
 
-def manual_login(driver,utdID,password):
+def manual_login(driver):
     """allow user to signs in manually
 
      waits until the Blackboard homepage appears, returns nothing
@@ -231,6 +201,7 @@ def manual_login(driver,utdID,password):
 
     driver.implicitly_wait(5)
 
+    '''
     # Find the input field by its ID (or other attributes) and input the UTD-ID
     netid_input = driver.find_element(By.ID, "netid")  # Locate the input field by ID
     netid_input.send_keys(utdID)  # Replace with your UTD-ID
@@ -241,9 +212,10 @@ def manual_login(driver,utdID,password):
     # Locate the button by its ID and click it
     login_button = driver.find_element(By.ID, "submit")  # Locate by ID
     login_button.click()  # Click the button
-
+    '''
     while not driver.title.startswith('Institution Page'):
         pass
+    driver.set_window_position(-2000, 0)  # Adjust values based on your screen size
     driver.get("https://elearning.utdallas.edu/ultra/course")
 
 
@@ -270,7 +242,9 @@ def get_courses_info(driver, delay_mult, save_root):
     expects homepage to already be loaded
     """
     result = []
-    driver.maximize_window()
+    #driver.maximize_window()
+    driver.set_window_size(1920, 1080)
+    #driver.set_window_position(-2000, 0)
     # TODO course announcements are included in the list
     if not wait_on_CSS_selector(
             driver,'h4.js-course-title-element[id^="course-name-"]',delay_mult,10):
@@ -316,7 +290,10 @@ def get_courses_info(driver, delay_mult, save_root):
         course_parts = course_text.split(' - ')
 
         # Extract the Course and Course ID
-        course_id = course_parts[0]  # e.g., 'CS 1200.002'
+        course_id_raw = course_parts[0]  # e.g., 'CS 1200.002'
+        course_major = course_id_raw.split(' ')[0]
+        course_number = course_id_raw.split(' ')[1].split('.')
+        course_id = course_major+'-'+course_number[0]+'-'+course_number[1] # e.g., 'CS-1200-002'
         course_name = ' - '.join(course_parts[1:])  # Join the rest of the string for the full course name
 
         # Print or return the extracted data
@@ -328,18 +305,20 @@ def get_courses_info(driver, delay_mult, save_root):
     return result
 
 
-def run_scraper(bb_url, utdID, password):
+def run_scraper(bb_url):
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Enable headless mode
 
-    driver = webdriver.Chrome(options=chrome_options)
+    #driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome()
 
     print("here we go!")
     # choose a nice size - the navpane is invisible at small widths,
     # but selenium can still see its elements
-    driver.maximize_window()
+    driver.set_window_size(600, 500)
+    #driver.maximize_window()
     driver.get(bb_url)
-    manual_login(driver,utdID,password)
+    manual_login(driver)
     session = setup_session(driver)
     print('Alright, I can drive from here.')
     # links are visible behind the cookie notice, but it gets annoying
@@ -358,21 +337,21 @@ def run_scraper(bb_url, utdID, password):
 
 
 app = Flask(__name__)
+CORS(app, origins="*")
 
 
-@app.route('/run', methods=['POST'])
+
+@app.route('/scrape', methods=['GET'])
 def run_script():
-    data = request.json
     bb_url = 'https://elearning.utdallas.edu/ultra/course'
-    utdId = data.get('utd_id')
-    password = data.get('utd_password')
 
-    courses = run_scraper(bb_url, utdId, password)
+
+    courses = run_scraper(bb_url)
     return jsonify({'courses': courses}), 200
 
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='127.0.0.1', port=3030)
 
 
