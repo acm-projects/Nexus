@@ -34,21 +34,30 @@ const GradeCalculator = () => {
     }, [userId]);
 
     useEffect(() => {
-        // Calculate remaining weight whenever categories change
+        // Existing calculations
         const totalWeight = categories.reduce((sum, category) => {
             return sum + (parseFloat(category.weight) || 0);
         }, 0);
         setRemainingWeight(100 - totalWeight);
        
         // Calculate overall grade
-        calculateOverallGrade();
-
+        const currentGrade = calculateOverallGrade();
+    
+        // Calculate required grade if user has entered a desired grade
+        if (classGrade) {
+            const required = calculateRequiredGrade(
+                parseFloat(currentGrade), 
+                remainingWeight,
+                parseFloat(classGrade)
+            );
+            setRequiredGrade(required);
+        }
+    
         categories.forEach((category, index) => {
             const grade = calculateCategoryGrade(category, index);
             updateCategoryGrade(index, grade);
         });
-
-    }, [categories]);
+    }, [categories, classGrade]); 
 
     const updateCategoryGrade = (index, grade) => {
         setCategoryGrades(prevGrades => {
@@ -79,6 +88,23 @@ const GradeCalculator = () => {
 
         return totalWeight > 0 ? (totalWeightedGrade / totalWeight).toFixed(2) : 'N/A';
     };
+
+    const calculateRequiredGrade = (currentWeightedGrade, remainingWeight, desiredGrade) => {
+        // If there's no remaining weight, return null as it's impossible to change the grade
+        if (remainingWeight <= 0) return null;
+        
+        // Convert everything to decimals for calculation
+        const currentWeight = 100 - remainingWeight;
+        const currentWeightDecimal = currentWeight / 100;
+        const remainingWeightDecimal = remainingWeight / 100;
+    
+        const requiredGrade = (desiredGrade - (currentWeightedGrade * currentWeightDecimal)) / remainingWeightDecimal;
+        
+        // Return null if the required grade is impossible (> 100 or < 0)
+        if (requiredGrade > 100 || requiredGrade < 0) return null;
+        
+        return requiredGrade.toFixed(2);
+      };
 
     const calculateOverallGrade = () => {
         let totalWeightedGrade = 0;
@@ -227,7 +253,11 @@ const GradeCalculator = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 1.0 }}
                 >
-                    <strong>Grade Required:</strong><br />90%
+                    <strong>Grade Required on Remaining Work:</strong><br />
+                    {requiredGrade === null ? 
+                        "Not possible with current grades" : 
+                        `${requiredGrade}%`
+                    }
                 </motion.h1>
                 {/* grid of categories */}
                 <motion.div 
