@@ -4,6 +4,7 @@
 import argparse
 import json
 import requests
+import psutil
 import time
 
 from enum import Enum
@@ -17,6 +18,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import *
 
 from selenium.webdriver.chrome.options import Options
 
@@ -66,6 +68,52 @@ class Link:
         }
         return result
 
+class BrowserSession:
+    def __init__(self):
+        self.driver = webdriver.Chrome()
+        self.cookies = []
+        self.utdid = None
+        self.passw = None
+
+    def create_driver(self):
+        """Initialize a new headless ChromeDriver."""
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--no-sandbox")
+        self.driver = webdriver.Chrome(options=chrome_options)
+
+    def save_cookies(self):
+        """Save cookies from the current driver session."""
+        self.cookies = self.driver.get_cookies()
+
+    def load_cookies(self):
+        """Load saved cookies into the new driver session."""
+        self.driver.delete_all_cookies()
+        print("deleted cookies: ",self.driver.get_cookies())
+        for cookie in self.cookies:
+            self.driver.add_cookie(cookie)
+
+    def close_driver(self):
+        """Close the current driver."""
+        if self.driver:
+            self.driver.quit()
+
+    def continue_with_new_driver(self):
+        """Terminate the current driver and continue with a new headless driver."""
+        if self.driver:
+            self.save_cookies()  # Save cookies before quitting the driver
+            self.close_driver()  # Terminate the old driver
+
+        # Reinitialize the driver with the same cookies
+        self.create_driver()
+        self.driver.get("https://elearning.utdallas.edu/ultra/courses")  # Navigate to the URL of your choice
+
+        # Load the saved cookies into the new driver session
+       # self.load_cookies()
+
+        # Refresh the page to ensure the cookies are applied
+        #self.driver.refresh()
 
 class DLResult(Enum):
     """represents various download results"""
@@ -191,7 +239,7 @@ def setup_session(driver):
     return session
 
 
-def manual_login(driver):
+def manual_login(browser):
     """allow user to signs in manually
 
      waits until the Blackboard homepage appears, returns nothing
@@ -199,7 +247,7 @@ def manual_login(driver):
     print('Please log into your university Blackboard account - I will'
           ' wait for you to reach the home page!')
 
-    driver.implicitly_wait(5)
+    browser.driver.implicitly_wait(5)
 
     '''
     # Find the input field by its ID (or other attributes) and input the UTD-ID
@@ -213,10 +261,37 @@ def manual_login(driver):
     login_button = driver.find_element(By.ID, "submit")  # Locate by ID
     login_button.click()  # Click the button
     '''
-    while not driver.title.startswith('Institution Page'):
-        pass
-    driver.set_window_position(-2000, 0)  # Adjust values based on your screen size
-    driver.get("https://elearning.utdallas.edu/ultra/course")
+    netid_value = None
+    password_value = None
+    while not browser.driver.title.startswith('Institution Page'):
+        try:
+            netid_element = browser.driver.find_element(By.ID, "netid")
+            netid_value = netid_element.get_attribute("value")
+            password_element = browser.driver.find_element(By.ID, "password")
+            password_value = password_element.get_attribute("value")
+        except (StaleElementReferenceException,NoSuchElementException):
+            pass
+
+
+
+    browser.continue_with_new_driver()
+
+    netid_element = browser.driver.find_element(By.ID, "netid")
+    password_element = browser.driver.find_element(By.ID, "password")
+    login_button = browser.driver.find_element(By.ID, "submit")
+
+    netid_element.send_keys(netid_value)
+    password_element.send_keys(password_value)
+    login_button.send_keys(Keys.RETURN)
+
+    while not browser.driver.title.startswith('Institution Page'):
+            pass
+
+    browser.driver.get("https://elearning.utdallas.edu/ultra/course")
+
+
+    #driver.set_window_position(-2000, 0)  # Adjust values based on your screen size
+
 
 
 def accept_cookies(driver, delay_mult):
@@ -306,28 +381,25 @@ def get_courses_info(driver, delay_mult, save_root):
 
 
 def run_scraper(bb_url):
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")  # Enable headless mode
-
-    #driver = webdriver.Chrome(options=chrome_options)
-    driver = webdriver.Chrome()
+    browser = BrowserSession()
 
     print("here we go!")
     # choose a nice size - the navpane is invisible at small widths,
     # but selenium can still see its elements
-    driver.set_window_size(600, 500)
+    browser.driver.set_window_size(600, 500)
     #driver.maximize_window()
-    driver.get(bb_url)
-    manual_login(driver)
-    session = setup_session(driver)
+    browser.driver.get(bb_url)
+    print("Intial cookies: ",browser.driver.get_cookies())
+    manual_login(browser)
+    session = setup_session(browser.driver)
     print('Alright, I can drive from here.')
     # links are visible behind the cookie notice, but it gets annoying
     # plus, there might be legal implications - so accept and move on
-    accept_cookies(driver, 1)
-    course_ids = get_courses_info(driver, 1, "save")
+    accept_cookies(browser.driver, 1)
+    course_ids = get_courses_info(browser.driver, 1, "save")
     print(f'I found {len(course_ids)} courses.')
-    driver.get("https://elearning.utdallas.edu/ultra/logout")
-    driver.quit()
+    browser.driver.get("https://elearning.utdallas.edu/ultra/logout")
+    browser.close_driver()
     courses = [
         {"course_id": course_id}
         for course_id in course_ids
