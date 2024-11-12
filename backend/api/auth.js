@@ -7,6 +7,7 @@ import { Router } from "express";
 import { v4 as uuidv4 } from 'uuid'
 import { onboardUser } from '../utils/onboardingHelpers.js';
 import { generateTokens } from "../middleware/authMiddleware.js";
+import axios from 'axios';
 
 const router = Router()
 
@@ -47,8 +48,46 @@ router.post('/register', async (req, res) => {
         password: hashPassword
       }
     }
-
+    const user_courses = await axios.post('http://localhost:3030/scrape');
     await dynamodb.put(params).promise();
+
+    const courses = await Promise.all(
+      user_courses.map(async (course) => {
+        const { courseCode, courseNumber, courseSection, profName } = course;
+
+        const courseId = profName
+          ? `${courseCode}`
+          : `${courseCode}`;
+
+        const params_check = {
+          TableName: 'SectionDB',
+          Key: {
+            sectionId: courseId
+          }
+        };
+
+        const result = await dynamodb.get(params_check).promise();
+        console.log('Section get:', result);
+        if (result.Item) {
+          console.log("Section Already Exists!");
+        } else {
+          await uploadSectionToAWS(courseId);
+        }
+
+
+
+
+        return {
+          courseCode,
+          courseNumber,
+          courseSection,
+          profName: profName || null,
+          courseId,
+        }
+
+      })
+    );
+    /*
     const courses = await Promise.all(
       userCourses.map(async (course) => {
         const { courseCode, courseNumber, courseSection, profName } = course;
@@ -85,7 +124,7 @@ router.post('/register', async (req, res) => {
         
       })
     );
-
+    */
 
 
     const onboardingParams = {
@@ -104,7 +143,7 @@ router.post('/register', async (req, res) => {
 
     const result = await onboardUser(userId, firstName, lastName, username, courses)
 
-   // const { accessToken, refreshToken } = await generateTokens(userId);
+    // const { accessToken, refreshToken } = await generateTokens(userId);
     // console.log("Access Token: ", accessToken); 
     // console.log("Refresh Token: ",refreshToken);
 
@@ -133,18 +172,18 @@ router.post('/register', async (req, res) => {
       ]);
       return res.status(500).json({ message: result.message, error: result.error });
     }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   }
