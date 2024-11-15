@@ -235,7 +235,7 @@ const UploadDoc = () => {
                 sectionId: location.value,
                 units: mappedBackUnits,
             });
-            setMessage(`Unit "${unitid}" added successfully.`);
+            setMessage(`Unit added successfully.`);
         } catch (error) {
             console.log("Error Adding Unit: ", error);
             setMessage('Failed to add new unit.');
