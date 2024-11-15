@@ -34,21 +34,30 @@ const GradeCalculator = () => {
     }, [userId]);
 
     useEffect(() => {
-        // Calculate remaining weight whenever categories change
+        // Existing calculations
         const totalWeight = categories.reduce((sum, category) => {
             return sum + (parseFloat(category.weight) || 0);
         }, 0);
         setRemainingWeight(100 - totalWeight);
        
         // Calculate overall grade
-        calculateOverallGrade();
-
+        const currentGrade = calculateOverallGrade();
+    
+        // Calculate required grade if user has entered a desired grade
+        if (classGrade) {
+            const required = calculateRequiredGrade(
+                parseFloat(currentGrade), 
+                remainingWeight,
+                parseFloat(classGrade)
+            );
+            setRequiredGrade(required);
+        }
+    
         categories.forEach((category, index) => {
             const grade = calculateCategoryGrade(category, index);
             updateCategoryGrade(index, grade);
         });
-
-    }, [categories]);
+    }, [categories, classGrade]); 
 
     const updateCategoryGrade = (index, grade) => {
         setCategoryGrades(prevGrades => {
@@ -79,6 +88,23 @@ const GradeCalculator = () => {
 
         return totalWeight > 0 ? (totalWeightedGrade / totalWeight).toFixed(2) : 'N/A';
     };
+
+    const calculateRequiredGrade = (currentWeightedGrade, remainingWeight, desiredGrade) => {
+        // If there's no remaining weight, return null as it's impossible to change the grade
+        if (remainingWeight <= 0) return null;
+        
+        // Convert everything to decimals for calculation
+        const currentWeight = 100 - remainingWeight;
+        const currentWeightDecimal = currentWeight / 100;
+        const remainingWeightDecimal = remainingWeight / 100;
+    
+        const requiredGrade = (desiredGrade - (currentWeightedGrade * currentWeightDecimal)) / remainingWeightDecimal;
+        
+        // Return null if the required grade is impossible (> 100 or < 0)
+        if (requiredGrade > 100 || requiredGrade < 0) return null;
+        
+        return requiredGrade.toFixed(2);
+      };
 
     const calculateOverallGrade = () => {
         let totalWeightedGrade = 0;
@@ -227,7 +253,11 @@ const GradeCalculator = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 1.0 }}
                 >
-                    <strong>Grade Required:</strong><br />90%
+                    <strong>Grade Required on Remaining Work:</strong><br />
+                    {requiredGrade === null ? 
+                        "Not possible with current grades" : 
+                        `${requiredGrade}%`
+                    }
                 </motion.h1>
                 {/* grid of categories */}
                 <motion.div 
@@ -243,7 +273,7 @@ const GradeCalculator = () => {
                                 <input
                                     type="text"
                                     id={`category-${categoryIndex}`}
-                                    className="mt-1 text-sm block w-full rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
+                                    className="mt-1 text-black text-sm block w-full rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
                                     value={category.name}
                                     onChange={(e) => handleCategoryChange(categoryIndex, "name", e.target.value)}
                                     placeholder="Enter Category"
@@ -253,7 +283,7 @@ const GradeCalculator = () => {
                                 <input
                                     type="number"
                                     id={`category-weight-${categoryIndex}`}
-                                    className="mt-1 pr-0 pl-3 w-1/4 rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
+                                    className="mt-1 text-black pr-0 pl-3 w-1/4 rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
                                     value={category.weight}
                                     onChange={(e) => handleCategoryChange(categoryIndex, "weight", e.target.value)}
                                     placeholder=""
