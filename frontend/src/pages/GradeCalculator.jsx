@@ -15,7 +15,7 @@ const GradeCalculator = () => {
     const [categoryGrades, setCategoryGrades] = useState([]);
     const [requiredGrade, setRequiredGrade] = useState(null);
 
-    // Fetch user's courses on component mount
+   
     useEffect(() => {
         const fetchCourses = async () => {
             try {
@@ -34,19 +34,17 @@ const GradeCalculator = () => {
     }, [userId]);
 
     useEffect(() => {
-        // Existing calculations
         const totalWeight = categories.reduce((sum, category) => {
             return sum + (parseFloat(category.weight) || 0);
         }, 0);
         setRemainingWeight(100 - totalWeight);
-       
-        // Calculate overall grade
-        const currentGrade = calculateOverallGrade();
     
-        // Calculate required grade if user has entered a desired grade
+        const currentGrade = calculateOverallGrade();
+        setOverallGrade(currentGrade); 
+    
         if (classGrade) {
             const required = calculateRequiredGrade(
-                parseFloat(currentGrade), 
+                parseFloat(currentGrade),
                 remainingWeight,
                 parseFloat(classGrade)
             );
@@ -57,7 +55,8 @@ const GradeCalculator = () => {
             const grade = calculateCategoryGrade(category, index);
             updateCategoryGrade(index, grade);
         });
-    }, [categories, classGrade]); 
+    }, [categories, classGrade]);
+    
 
     const updateCategoryGrade = (index, grade) => {
         setCategoryGrades(prevGrades => {
@@ -69,74 +68,84 @@ const GradeCalculator = () => {
 
 
     const calculateCategoryGrade = (category, index) => {
-        const assignments = category.assignments.filter(a => 
-            a.grade !== "" && a.weight !== "" && 
-            !isNaN(parseFloat(a.grade)) && !isNaN(parseFloat(a.weight))
+        const validAssignments = category.assignments.filter(a => 
+          a.grade !== "" && 
+          a.weight !== "" && 
+          !isNaN(parseFloat(a.grade)) && 
+          !isNaN(parseFloat(a.weight))
         );
         
-        if (assignments.length === 0) return 'N/A';
+        if (validAssignments.length === 0) return 'N/A';
+    
+        // Calculate total points earned and total points possible
+        const totalPointsEarned = validAssignments.reduce((sum, assignment) => 
+          sum + (parseFloat(assignment.grade) || 0), 0
+        );
+        
+        const totalPointsPossible = validAssignments.reduce((sum, assignment) => 
+          sum + (parseFloat(assignment.weight) || 0), 0
+        );
+    
+        // Calculate percentage if there are points possible
+        if (totalPointsPossible > 0) {
+          const percentage = (totalPointsEarned / totalPointsPossible) * 100;
+          return percentage.toFixed(2);
+        }
+    
+        return 'N/A';
+      };
 
-        let totalWeightedGrade = 0;
-        let totalWeight = 0;
+      
 
-        assignments.forEach(assignment => {
-            const grade = parseFloat(assignment.grade);
-            const weight = parseFloat(assignment.weight);
-            totalWeightedGrade += (grade * weight);
-            totalWeight += weight;
-        });
-
-        return totalWeight > 0 ? (totalWeightedGrade / totalWeight).toFixed(2) : 'N/A';
-    };
-
-    const calculateRequiredGrade = (currentWeightedGrade, remainingWeight, desiredGrade) => {
-        // If there's no remaining weight, return null as it's impossible to change the grade
+      const calculateRequiredGrade = (currentWeightedGrade, remainingWeight, desiredGrade) => {
         if (remainingWeight <= 0) return null;
         
-        // Convert everything to decimals for calculation
+        // Convert to percentages
         const currentWeight = 100 - remainingWeight;
         const currentWeightDecimal = currentWeight / 100;
         const remainingWeightDecimal = remainingWeight / 100;
-    
-        const requiredGrade = (desiredGrade - (currentWeightedGrade * currentWeightDecimal)) / remainingWeightDecimal;
         
-        // Return null if the required grade is impossible (> 100 or < 0)
+        // Calculate required grade on remaining work
+        const requiredGrade = (
+          (desiredGrade - (currentWeightedGrade * currentWeightDecimal)) / 
+          remainingWeightDecimal
+        );
+        
+        // Check if the required grade is possible
         if (requiredGrade > 100 || requiredGrade < 0) return null;
         
         return requiredGrade.toFixed(2);
       };
+    
 
-    const calculateOverallGrade = () => {
-        let totalWeightedGrade = 0;
-        let totalWeight = 0;
+    
+  const calculateOverallGrade = () => {
+    let weightedTotal = 0;
+    let totalWeight = 0;
 
-        categories.forEach(category => {
-            const categoryWeight = parseFloat(category.weight) || 0;
-            const assignments = category.assignments.filter(a => a.grade && a.weight);
-           
-            if (assignments.length > 0) {
-                let categoryGrade = 0;
-                let assignmentWeightSum = 0;
-               
-                assignments.forEach(assignment => {
-                    const grade = parseFloat(assignment.grade);
-                    const weight = parseFloat(assignment.weight);
-                    categoryGrade += (grade * weight);
-                    assignmentWeightSum += weight;
-                });
+    categories.forEach(category => {
+      // Skip categories with no weight or invalid weight
+      const categoryWeight = parseFloat(category.weight);
+      if (!categoryWeight || isNaN(categoryWeight)) return;
 
-                if (assignmentWeightSum > 0) {
-                    categoryGrade = categoryGrade / assignmentWeightSum;
-                    totalWeightedGrade += (categoryGrade * (categoryWeight / 100));
-                    totalWeight += categoryWeight;
-                }
-            }
-        });
+      // Get category grade
+      const categoryGrade = parseFloat(calculateCategoryGrade(category));
+      
+      // Only include valid category grades in calculation
+      if (!isNaN(categoryGrade)) {
+        weightedTotal += (categoryGrade * (categoryWeight / 100));
+        totalWeight += categoryWeight;
+      }
+    });
 
-        const calculatedGrade = totalWeightedGrade.toFixed(2);
-        setOverallGrade(calculatedGrade);
-        return calculatedGrade;
-    };
+    // If no valid weighted grades, return 0
+    if (totalWeight === 0) return '0.00';
+
+    // Scale the grade based on weights entered so far
+    const scaledGrade = (weightedTotal / totalWeight) * 100;
+    
+    return scaledGrade.toFixed(2);
+  };
 
     const saveCategoryGrade = async (categoryName, categoryGrade) => {
         try {
@@ -188,7 +197,7 @@ const GradeCalculator = () => {
                     weight: assignment.weight
                 });
     
-                // Recalculate and save category grade
+               
                 const categoryGrade = calculateCategoryGrade(newCategories[categoryIndex], categoryIndex);
                 await saveCategoryGrade(newCategories[categoryIndex].name, categoryGrade);
             } catch (error) {
@@ -199,13 +208,10 @@ const GradeCalculator = () => {
 
     const saveGrades = async () => {
         try {
-            // First, save all category grades
             await Promise.all(categories.map(category => {
                 const categoryGrade = calculateCategoryGrade(category);
                 return saveCategoryGrade(category.name, categoryGrade);
             }));
-
-            // Then calculate and save overall grade
             const finalGrade = calculateOverallGrade();
             const response = await axios.get('http://localhost:3000/api/gradeCalculator/calculateGrade', {
                 params: { userId, courseId }
@@ -273,7 +279,7 @@ const GradeCalculator = () => {
                                 <input
                                     type="text"
                                     id={`category-${categoryIndex}`}
-                                    className="mt-1 text-sm block w-full rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
+                                    className="mt-1 text-black text-sm block w-full rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 p-1"
                                     value={category.name}
                                     onChange={(e) => handleCategoryChange(categoryIndex, "name", e.target.value)}
                                     placeholder="Enter Category"
@@ -283,7 +289,7 @@ const GradeCalculator = () => {
                                 <input
                                     type="number"
                                     id={`category-weight-${categoryIndex}`}
-                                    className="mt-1 pr-0 pl-3 w-1/4 rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-white p-1"
+                                    className="mt-1 pr-0 pl-3 w-1/4 text-black rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 p-1"
                                     value={category.weight}
                                     onChange={(e) => handleCategoryChange(categoryIndex, "weight", e.target.value)}
                                     placeholder=""
@@ -292,8 +298,8 @@ const GradeCalculator = () => {
                             </div>
                             <div className="pt-5 grid grid-cols-3 gap-x-4 gap-y-2 place-content-evenly">
                                 <h1 className="text-white">Assignment</h1>
-                                <h1 className="text-white">Grade (%)</h1>
-                                <h1 className="text-white">Weight (%)</h1>
+                                <h1 className="text-white">Grade Earned (Points)</h1>
+                                <h1 className="text-white">Points Possible </h1>
                                 {category.assignments.map((assignment, assignmentIndex) => (
                                     <React.Fragment key={assignmentIndex}>
                                         <input
@@ -309,7 +315,7 @@ const GradeCalculator = () => {
                                             className="mt-1 text-xs h-8 w-5/6 block w-full rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
                                             value={assignment.grade}
                                             onChange={(e) => handleAssignmentChange(categoryIndex, assignmentIndex, "grade", e.target.value)}
-                                            placeholder="Grade"
+                                            placeholder="Grade Earned"
                                             required
                                         />
                                         <input
@@ -317,7 +323,7 @@ const GradeCalculator = () => {
                                             className="mt-1 text-xs h-8 w-5/6 block w-full rounded-md bg-nexus-blue-50 border-gray-300 shadow-sm focus:border-nexus-blue-300 focus:ring focus:ring-nexus-blue-200 focus:ring-opacity-50 text-nexus-blue-800 p-1"
                                             value={assignment.weight}
                                             onChange={(e) => handleAssignmentChange(categoryIndex, assignmentIndex, "weight", e.target.value)}
-                                            placeholder="Weight"
+                                            placeholder="Points Possible"
                                             required
                                         />
                                     </React.Fragment>
@@ -375,12 +381,6 @@ const GradeCalculator = () => {
                         className="mt-6 mr-4 p-2 bg-nexus-blue-300 text-white font-bold rounded-md transition duration-300 hover:text-nexus-blue-900 transform hover:bg-nexus-blue-100"
                     >
                     Add Category
-                </button>
-                <button 
-                className = "px-6 py-2 bg-nexus-blue-300 text-white font-bold rounded-md transition duration-300 hover:text-nexus-blue-900 transform hover:bg-nexus-blue-100"
-                onClick={saveGrades}
-                >
-                Save
                 </button>
             </motion.div>
         </div>
